@@ -1,0 +1,28 @@
+{
+    "//1": "describes your app and its dependencies",
+    "//2": "https://docs.npmjs.com/files/package.json",
+    "//3": "updating this file will download and update your packages",
+    "name": "animacion-agustin",
+    "version": "1.0.0",
+    "description": "Proyecto de animación en three.js",
+    "main": "server.js",
+    "scripts": {
+      "start": "node server.js"
+    },
+    "dependencies": {
+      "express": "^5.0.1"
+    },
+    "engines": {
+      "node": "16.x"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/aagiribar/animacion.git"
+    },
+    "license": "MIT",
+    "keywords": [
+      "node",
+      "gomix",
+      "express"
+    ]
+  }
