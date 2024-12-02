@@ -16,6 +16,8 @@ app.get("/", function (request, response) {
   response.sendFile(__dirname + '/views/index.html');
 });
 
+app.use(express.static('assets'));
+
 // listen for requests :)
 var listener = app.listen(/*process.env.PORT*/ 3000, function () {
   console.log('Your app is listening on port ' + listener.address().port);
