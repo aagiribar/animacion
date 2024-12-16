@@ -23,6 +23,11 @@ let transformAux1;
 let tempBtVec3_1;
 
 let rigidBodies = [];
+let suelo;
+
+// Raycaster
+const mouseCoords = new THREE.Vector2()
+let raycaster = new THREE.Raycaster();
 
 //Inicialización ammo
 Ammo().then(function (AmmoLib) {
@@ -39,6 +44,8 @@ function init() {
     initPhysics();
     // Objetos
     createObjects();
+    // Interacción
+    initInput();
 }
 
 function initGraphics() {
@@ -116,7 +123,7 @@ function createObjects() {
     pos.set(0, -0.5, 0);
     quat.set(0, 0, 0, 1);
 
-    const suelo = createBoxWithPhysics(
+    suelo = createBoxWithPhysics(
         40,
         1,
         40,
@@ -136,6 +143,42 @@ function createObjects() {
             suelo.material.needsUpdate = true;
         }
     );
+}
+
+function initInput() {
+    document.addEventListener("mousedown", function(event) {
+        //Coordenadas del puntero
+        mouseCoords.set(
+            (event.clientX / window.innerWidth) * 2 - 1,
+            -(event.clientY / window.innerHeight) * 2 + 1
+        );
+    
+        // Intersección, define rayo
+        raycaster.setFromCamera(mouseCoords, camara);
+
+        // Se detectan las intersecciones con el rayo
+        const intersecciones = raycaster.intersectObject(suelo);
+
+        if (intersecciones.length > 0) {
+            var c = new THREE.Color();
+            c.set( THREE.MathUtils.randInt(0, Math.pow(2, 24) - 1));
+            
+
+            pos.set(intersecciones[0].point.x, 2, intersecciones[0].point.z);
+            quat.set(0, 0, 0, 1);
+
+            createBoxWithPhysics(
+                THREE.MathUtils.randInt(1, 4), 
+                THREE.MathUtils.randInt(1, 4), 
+                THREE.MathUtils.randInt(1, 4), 
+                THREE.MathUtils.randInt(1, 2), 
+                pos, 
+                quat, 
+                new THREE.MeshPhongMaterial({ color: c }));
+        }
+        
+
+    });
 }
 
 function createBoxWithPhysics(sx, sy, sz, mass, pos, quat, material) {
