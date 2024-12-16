@@ -28,6 +28,7 @@ let tempBtVec3_1;
 
 let rigidBodies = [];
 let objects = [];
+let objectsOnFloor = [];
 let suelo;
 
 // Raycaster
@@ -43,6 +44,9 @@ Ammo().then(function (AmmoLib) {
     animationLoop();
 });
 
+let info;
+let infoCubos;
+
 function init() {
     // Elementos gráficos
     initGraphics();
@@ -52,6 +56,8 @@ function init() {
     createObjects();
     // Interacción
     initInput();
+    // Información en pantalla
+    initInfo();
 }
 
 function initGraphics() {
@@ -222,6 +228,25 @@ function initInput() {
     });
 }
 
+function initInfo() {
+    info = document.createElement('div');
+    info.style.position = 'absolute';
+    info.style.top = '30px';
+    info.style.width = '100%';
+    info.style.textAlign = 'center';
+    info.style.color = '#000';
+    info.style.fontWeight = 'bold';
+    info.style.backgroundColor = 'transparent';
+    info.style.zIndex = '1';
+    info.style.fontFamily = 'Monospace';
+    info.innerHTML = "Cubos en la plataforma: ";
+    document.body.appendChild(info);
+
+    infoCubos = document.createElement("span");
+    infoCubos.innerHTML = "" + objectsOnFloor.length;
+    info.appendChild(infoCubos);
+}
+
 function createBoxWithPhysics(sx, sy, sz, mass, pos, quat, material) {
     const object = new THREE.Mesh(
         new THREE.BoxGeometry(sx, sy, sz, 1, 1, 1),
@@ -308,13 +333,30 @@ function onWindowResize() {
     camara.updateProjectionMatrix();
   
     renderer.setSize(window.innerWidth, window.innerHeight);
-  }
+}
+
+function updateObjectsOnFloor() {
+    objectsOnFloor = [];
+    for (let i = 1; i < objects.length; i++) {
+        const object = objects[i];
+        
+        if(object.position.y > -1) {
+            objectsOnFloor.push(object);
+        }
+    }
+    updateInfoCubos();
+}
+
+function updateInfoCubos() {
+    infoCubos.innerHTML = "" + objectsOnFloor.length;
+}
 
 function animationLoop() {
     requestAnimationFrame(animationLoop);
 
     const deltaTime = clock.getDelta();
     updatePhysics(deltaTime);
+    updateObjectsOnFloor();
 
     renderer.render(escena, camara);
 }
