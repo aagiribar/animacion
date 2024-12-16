@@ -23,6 +23,7 @@ let transformAux1;
 let tempBtVec3_1;
 
 let rigidBodies = [];
+let objects = [];
 let suelo;
 
 // Raycaster
@@ -63,6 +64,7 @@ function initGraphics() {
 
     renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
     document.body.appendChild(renderer.domElement);
 
     textureLoader = new THREE.TextureLoader();
@@ -143,6 +145,7 @@ function createObjects() {
             suelo.material.needsUpdate = true;
         }
     );
+    objects.push(suelo);
 }
 
 function initInput() {
@@ -157,24 +160,27 @@ function initInput() {
         raycaster.setFromCamera(mouseCoords, camara);
 
         // Se detectan las intersecciones con el rayo
-        const intersecciones = raycaster.intersectObject(suelo);
+        const intersecciones = raycaster.intersectObjects(objects);
 
         if (intersecciones.length > 0) {
             var c = new THREE.Color();
             c.set( THREE.MathUtils.randInt(0, Math.pow(2, 24) - 1));
             
 
-            pos.set(intersecciones[0].point.x, 2, intersecciones[0].point.z);
+            pos.set(intersecciones[0].point.x, intersecciones[0].point.y + 2, intersecciones[0].point.z);
             quat.set(0, 0, 0, 1);
 
-            createBoxWithPhysics(
+            let object = createBoxWithPhysics(
                 THREE.MathUtils.randInt(1, 4), 
                 THREE.MathUtils.randInt(1, 4), 
                 THREE.MathUtils.randInt(1, 4), 
                 THREE.MathUtils.randInt(1, 2), 
                 pos, 
                 quat, 
-                new THREE.MeshPhongMaterial({ color: c }));
+                new THREE.MeshPhongMaterial({ color: c })
+            );
+            object.castShadow = true
+            objects.push(object);
         }
         
 
