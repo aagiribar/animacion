@@ -243,6 +243,10 @@ function initInput() {
             pos.copy(raycaster.ray.direction);
             pos.multiplyScalar(24);
             ballBody.setLinearVelocity(new Ammo.btVector3(pos.x, pos.y, pos.z));
+
+            if (jugando) {
+                nBolas--;
+            }
         }
     });
 }
@@ -404,7 +408,22 @@ function comprobarJuego() {
             elementosUI["Colocar cubos"] = false;
         }
     }
-    else if(faseJuego == 1) {}
+    else if (faseJuego == 1) {
+        infoJuego.innerHTML = "Bolas disponibles: " + nBolas;
+
+        if(nBolas <= 0 || objectsOnFloor == 0) {
+            faseJuego = 2;
+        }
+    }
+    else if(faseJuego == 2) {
+        gui.show();
+        if (objectsOnFloor == 0) {
+            infoJuego.innerHTML = "Has ganado"
+        }
+        else {
+            infoJuego.innerHTML = "Has perdido"
+        }
+    }
 }
 
 function animationLoop() {
