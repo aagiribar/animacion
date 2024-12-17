@@ -9,6 +9,7 @@ const clock = new THREE.Clock();
 
 const gui = new GUI();
 let elementosUI;
+let carpetaJuego;
 
 // Mundo físico con Ammo
 let physicsWorld;
@@ -28,7 +29,7 @@ let tempBtVec3_1;
 
 let rigidBodies = [];
 let objects = [];
-let objectsOnFloor = [];
+let objectsOnFloor = 0;
 let suelo;
 
 // Raycaster
@@ -47,6 +48,11 @@ Ammo().then(function (AmmoLib) {
 let info;
 let infoCubos;
 
+let jugando = false;
+let faseJuego;
+
+let nCubos, nBolas;
+
 function init() {
     // Elementos gráficos
     initGraphics();
@@ -58,6 +64,8 @@ function init() {
     initInput();
     // Información en pantalla
     initInfo();
+    // Interfaz de usuario
+    initGUI();
 }
 
 function initGraphics() {
@@ -159,12 +167,22 @@ function createObjects() {
     objects.push(suelo);
 }
 
-function initInput() {
+function initGUI() {
     elementosUI = {
-        "Colocar cubos": true
+        "Colocar cubos": true,
+        "Número de cubos": 10,
+        "Dificultad": "Fácil",
+        "Empezar juego": empezarJuego
     }
     gui.add(elementosUI, "Colocar cubos", true);
+    
+    carpetaJuego = gui.addFolder("Juego");
+    carpetaJuego.add(elementosUI, "Número de cubos", 10, 30, 1);
+    carpetaJuego.add(elementosUI, "Dificultad", ["Fácil", "Normal", "Dificil"]);
+    carpetaJuego.add(elementosUI, "Empezar juego");
+}
 
+function initInput() {
     document.addEventListener("mousedown", function(event) {
         //Coordenadas del puntero
         mouseCoords.set(
@@ -336,19 +354,45 @@ function onWindowResize() {
 }
 
 function updateObjectsOnFloor() {
-    objectsOnFloor = [];
+    objectsOnFloor = 0;
     for (let i = 1; i < objects.length; i++) {
         const object = objects[i];
         
         if(object.position.y > -1) {
-            objectsOnFloor.push(object);
+            objectsOnFloor++;
         }
     }
     updateInfoCubos();
 }
 
 function updateInfoCubos() {
-    infoCubos.innerHTML = "" + objectsOnFloor.length;
+    infoCubos.innerHTML = "" + objectsOnFloor;
+}
+
+function empezarJuego() {
+    gui.hide();
+    jugando = true;
+    faseJuego = 0;
+
+    nCubos = elementosUI["Número de cubos"];
+    switch (elementosUI["Dificultad"]) {
+        case "Fácil":
+            nBolas = Math.floor(nCubos * 0.75);
+            break;
+        case "Normal":
+            nBolas = Math.floor(nCubos * 0.50);
+            break;
+        case "Dificil":
+            nBolas = Math.floor(nCubos * 0.33);
+            break;
+        default:
+            nBolas = Math.floor(nCubos * 0.75);
+            break;
+    };
+}
+
+function comprobarJuego() {
+    
 }
 
 function animationLoop() {
@@ -357,6 +401,10 @@ function animationLoop() {
     const deltaTime = clock.getDelta();
     updatePhysics(deltaTime);
     updateObjectsOnFloor();
+
+    if(jugando) {
+        comprobarJuego();
+    }
 
     renderer.render(escena, camara);
 }
