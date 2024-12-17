@@ -47,6 +47,7 @@ Ammo().then(function (AmmoLib) {
 
 let info;
 let infoCubos;
+let infoJuego;
 
 let jugando = false;
 let faseJuego;
@@ -263,6 +264,8 @@ function initInfo() {
     infoCubos = document.createElement("span");
     infoCubos.innerHTML = "" + objectsOnFloor.length;
     info.appendChild(infoCubos);
+
+    infoJuego = document.createElement("div");
 }
 
 function createBoxWithPhysics(sx, sy, sz, mass, pos, quat, material) {
@@ -389,10 +392,19 @@ function empezarJuego() {
             nBolas = Math.floor(nCubos * 0.75);
             break;
     };
+
+    info.appendChild(infoJuego);
 }
 
 function comprobarJuego() {
-    
+    if (faseJuego == 0) {
+        infoJuego.innerHTML = "Cubos pendientes de colocar: " + (nCubos - objectsOnFloor);
+        if ((nCubos - objectsOnFloor) <= 0) {
+            faseJuego = 1;
+            elementosUI["Colocar cubos"] = false;
+        }
+    }
+    else if(faseJuego == 1) {}
 }
 
 function animationLoop() {
