@@ -11,6 +11,7 @@ const gui = new GUI();
 let elementosUI;
 let carpetaJuego;
 let selectorColocar;
+let botonTerminar;
 
 // Mundo físico con Ammo
 let physicsWorld;
@@ -177,11 +178,14 @@ function initGUI() {
         "Colocar cubos": true,
         "Número de cubos": 10,
         "Dificultad": "Fácil",
-        "Empezar juego": empezarJuego
+        "Empezar juego": empezarJuego,
+        "Terminar juego": terminarJuego
     }
 
     selectorColocar = gui.add(elementosUI, "Colocar cubos", true);
     gui.add(elementosUI, "Disparo con botón izquierdo", false);
+    botonTerminar = gui.add(elementosUI, "Terminar juego");
+    botonTerminar.hide();
 
     carpetaJuego = gui.addFolder("Juego");
     carpetaJuego.add(elementosUI, "Número de cubos", 10, 30, 1);
@@ -428,6 +432,15 @@ function empezarJuego() {
     info.appendChild(infoJuego);
 }
 
+function terminarJuego() {
+    jugando = false;
+    botonTerminar.hide();
+
+    selectorColocar.updateDisplay();
+    selectorColocar.show();
+    carpetaJuego.show();
+}
+
 function comprobarJuego() {
     if (faseJuego == 0) {
         infoJuego.innerHTML = "Cubos pendientes de colocar: " + (nCubos - cubesOnFloor);
@@ -444,11 +457,7 @@ function comprobarJuego() {
         }
     }
     else if(faseJuego == 2) {
-        jugando = false;
-        selectorColocar.updateDisplay();
-        
-        selectorColocar.show();
-        carpetaJuego.show();
+        botonTerminar.show();
 
         if (cubesOnFloor == 0) {
             infoJuego.innerHTML = "Has ganado";
