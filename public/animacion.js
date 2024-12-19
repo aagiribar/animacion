@@ -28,8 +28,10 @@ let transformAux1;
 let tempBtVec3_1;
 
 let rigidBodies = [];
-let objects = [];
-let objectsOnFloor = 0;
+let cubos = [];
+let bolas = [];
+let cubesOnFloor = 0;
+let ballsOnFloor = 0;
 let suelo;
 
 // Raycaster
@@ -46,7 +48,7 @@ Ammo().then(function (AmmoLib) {
 });
 
 let info;
-let infoCubos;
+let infoCubos, infoBolas;
 let infoJuego;
 
 let jugando = false;
@@ -165,7 +167,7 @@ function createObjects() {
             suelo.material.needsUpdate = true;
         }
     );
-    objects.push(suelo);
+    cubos.push(suelo);
 }
 
 function initGUI() {
@@ -195,7 +197,7 @@ function initInput() {
         raycaster.setFromCamera(mouseCoords, camara);
 
         // Se detectan las intersecciones con el rayo
-        const intersecciones = raycaster.intersectObjects(objects);
+        const intersecciones = raycaster.intersectObjects(cubos);
 
         if (elementosUI["Colocar cubos"]) {
             if (intersecciones.length > 0) {
@@ -217,7 +219,7 @@ function initInput() {
                 );
                 object.castShadow = true;
                 object.receiveShadow = true;
-                objects.push(object);
+                cubos.push(object);
             }
         }
         else {
@@ -244,6 +246,8 @@ function initInput() {
             pos.multiplyScalar(24);
             ballBody.setLinearVelocity(new Ammo.btVector3(pos.x, pos.y, pos.z));
 
+            bolas.push(ball);
+
             if (jugando) {
                 nBolas--;
             }
@@ -262,12 +266,15 @@ function initInfo() {
     info.style.backgroundColor = 'transparent';
     info.style.zIndex = '1';
     info.style.fontFamily = 'Monospace';
-    info.innerHTML = "Cubos en la plataforma: ";
     document.body.appendChild(info);
 
-    infoCubos = document.createElement("span");
-    infoCubos.innerHTML = "" + objectsOnFloor.length;
+    infoCubos = document.createElement("div");
+    infoCubos.innerHTML = "Cubos en la plataforma: " + cubesOnFloor;
     info.appendChild(infoCubos);
+
+    infoBolas = document.createElement("div");
+    infoBolas.innerHTML = "Bolas en la plataforma: " + ballsOnFloor;
+    info.appendChild(infoBolas);
 
     infoJuego = document.createElement("div");
 }
@@ -361,19 +368,29 @@ function onWindowResize() {
 }
 
 function updateObjectsOnFloor() {
-    objectsOnFloor = 0;
-    for (let i = 1; i < objects.length; i++) {
-        const object = objects[i];
+    cubesOnFloor = 0;
+    for (let i = 1; i < cubos.length; i++) {
+        const cubo = cubos[i];
         
-        if(object.position.y > -1) {
-            objectsOnFloor++;
+        if(cubo.position.y > -1) {
+            cubesOnFloor++;
         }
     }
-    updateInfoCubos();
+
+    ballsOnFloor = 0;
+    for(let i = 0; i < bolas.length; i++) {
+        const bola = bolas[i];
+
+        if(bola.position.y > -1) {
+            ballsOnFloor++;
+        }
+    }
+    updateInfo();
 }
 
-function updateInfoCubos() {
-    infoCubos.innerHTML = "" + objectsOnFloor;
+function updateInfo() {
+    infoCubos.innerHTML = "Cubos en la plataforma: " + cubesOnFloor;
+    infoBolas.innerHTML = "Bolas en la plataforma: " + ballsOnFloor;
 }
 
 function empezarJuego() {
@@ -402,8 +419,8 @@ function empezarJuego() {
 
 function comprobarJuego() {
     if (faseJuego == 0) {
-        infoJuego.innerHTML = "Cubos pendientes de colocar: " + (nCubos - objectsOnFloor);
-        if ((nCubos - objectsOnFloor) <= 0) {
+        infoJuego.innerHTML = "Cubos pendientes de colocar: " + (nCubos - cubesOnFloor);
+        if ((nCubos - cubesOnFloor) <= 0) {
             faseJuego = 1;
             elementosUI["Colocar cubos"] = false;
         }
@@ -411,13 +428,13 @@ function comprobarJuego() {
     else if (faseJuego == 1) {
         infoJuego.innerHTML = "Bolas disponibles: " + nBolas;
 
-        if(nBolas <= 0 || objectsOnFloor == 0) {
+        if(nBolas <= 0 || cubesOnFloor == 0) {
             faseJuego = 2;
         }
     }
     else if(faseJuego == 2) {
         gui.show();
-        if (objectsOnFloor == 0) {
+        if (cubesOnFloor == 0) {
             infoJuego.innerHTML = "Has ganado"
         }
         else {
