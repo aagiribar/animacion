@@ -173,13 +173,16 @@ function createObjects() {
 
 function initGUI() {
     elementosUI = {
+        "Disparo con botón izquierdo": false,
         "Colocar cubos": true,
         "Número de cubos": 10,
         "Dificultad": "Fácil",
         "Empezar juego": empezarJuego
     }
+
     selectorColocar = gui.add(elementosUI, "Colocar cubos", true);
-    
+    gui.add(elementosUI, "Disparo con botón izquierdo", false);
+
     carpetaJuego = gui.addFolder("Juego");
     carpetaJuego.add(elementosUI, "Número de cubos", 10, 30, 1);
     carpetaJuego.add(elementosUI, "Dificultad", ["Fácil", "Normal", "Dificil"]);
@@ -188,7 +191,7 @@ function initGUI() {
 
 function initInput() {
     document.addEventListener("mousedown", function(event) {
-        if (event.button == 2) {
+        if ((event.button == 2 && !elementosUI["Disparo con botón izquierdo"] || elementosUI["Disparo con botón izquierdo"])) {
             //Coordenadas del puntero
             mouseCoords.set(
                 (event.clientX / window.innerWidth) * 2 - 1,
@@ -398,7 +401,9 @@ function updateInfo() {
 }
 
 function empezarJuego() {
-    gui.hide();
+    carpetaJuego.hide();
+    selectorColocar.hide();
+
     jugando = true;
     faseJuego = 0;
     elementosUI["Colocar cubos"] = true;
@@ -441,7 +446,10 @@ function comprobarJuego() {
     else if(faseJuego == 2) {
         jugando = false;
         selectorColocar.updateDisplay();
-        gui.show();
+        
+        selectorColocar.show();
+        carpetaJuego.show();
+
         if (cubesOnFloor == 0) {
             infoJuego.innerHTML = "Has ganado";
             infoJuego.style.color = "green";
