@@ -414,6 +414,11 @@ function empezarJuego() {
     infoJuego.style.color = "#000";
 
     nCubos = elementosUI["Número de cubos"];
+
+    if (cubesOnFloor > nCubos) {
+        nCubos = cubesOnFloor;
+    }
+
     switch (elementosUI["Dificultad"]) {
         case "Fácil":
             nBolas = Math.floor(nCubos * 0.75);
