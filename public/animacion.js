@@ -188,70 +188,71 @@ function initGUI() {
 
 function initInput() {
     document.addEventListener("mousedown", function(event) {
-        //Coordenadas del puntero
-        mouseCoords.set(
-            (event.clientX / window.innerWidth) * 2 - 1,
-            -(event.clientY / window.innerHeight) * 2 + 1
-        );
+        if (event.button == 2) {
+            //Coordenadas del puntero
+            mouseCoords.set(
+                (event.clientX / window.innerWidth) * 2 - 1,
+                -(event.clientY / window.innerHeight) * 2 + 1
+            );
     
-        // Intersección, define rayo
-        raycaster.setFromCamera(mouseCoords, camara);
+            // Intersección, define rayo
+            raycaster.setFromCamera(mouseCoords, camara);
 
-        // Se detectan las intersecciones con el rayo
-        const intersecciones = raycaster.intersectObjects(cubos);
+            // Se detectan las intersecciones con el rayo
+            const intersecciones = raycaster.intersectObjects(cubos);
 
-        if (elementosUI["Colocar cubos"]) {
-            if (intersecciones.length > 0) {
-                var c = new THREE.Color();
-                c.set( THREE.MathUtils.randInt(0, Math.pow(2, 24) - 1));
+            if (elementosUI["Colocar cubos"]) {
+                if (intersecciones.length > 0) {
+                    var c = new THREE.Color();
+                    c.set( THREE.MathUtils.randInt(0, Math.pow(2, 24) - 1));
                 
+                    pos.set(intersecciones[0].point.x, intersecciones[0].point.y + 2, intersecciones[0].point.z);
+                    quat.set(0, 0, 0, 1);
     
-                pos.set(intersecciones[0].point.x, intersecciones[0].point.y + 2, intersecciones[0].point.z);
-                quat.set(0, 0, 0, 1);
-    
-                let object = createBoxWithPhysics(
-                    THREE.MathUtils.randInt(1, 4), 
-                    THREE.MathUtils.randInt(1, 4), 
-                    THREE.MathUtils.randInt(1, 4), 
-                    THREE.MathUtils.randInt(1, 2), 
-                    pos, 
-                    quat, 
-                    new THREE.MeshPhongMaterial({ color: c })
-                );
-                object.castShadow = true;
-                object.receiveShadow = true;
-                cubos.push(object);
+                    let object = createBoxWithPhysics(
+                        THREE.MathUtils.randInt(1, 4), 
+                        THREE.MathUtils.randInt(1, 4), 
+                        THREE.MathUtils.randInt(1, 4), 
+                        THREE.MathUtils.randInt(1, 2), 
+                        pos, 
+                        quat, 
+                        new THREE.MeshPhongMaterial({ color: c })
+                    );
+                    object.castShadow = true;
+                    object.receiveShadow = true;
+                    cubos.push(object);
+                }
             }
-        }
-        else {
-            if (!jugando || nBolas > 0) {
-                // Crea bola como cuerpo rígido y la lanza según coordenadas de ratón
-                const ballMass = 35;
-                const ballRadius = 0.4;
-                const ball = new THREE.Mesh(
-                    new THREE.SphereGeometry(ballRadius, 14, 10),
-                    ballMaterial
-                );
-                ball.castShadow = true;
-                ball.receiveShadow = true;
+            else {
+                if (!jugando || nBolas > 0) {
+                    // Crea bola como cuerpo rígido y la lanza según coordenadas de ratón
+                    const ballMass = 35;
+                    const ballRadius = 0.4;
+                    const ball = new THREE.Mesh(
+                        new THREE.SphereGeometry(ballRadius, 14, 10),
+                        ballMaterial
+                    );
+                    ball.castShadow = true;
+                    ball.receiveShadow = true;
     
-                //Ammo
-                //Estructura geométrica de colisión esférica
-                const ballShape = new Ammo.btSphereShape(ballRadius);
-                ballShape.setMargin(margin);
-                pos.copy(raycaster.ray.direction);
-                pos.add(raycaster.ray.origin);
-                quat.set(0, 0, 0, 1);
-                const ballBody = createRigidBody(ball, ballShape, ballMass, pos, quat);
+                    //Ammo
+                    //Estructura geométrica de colisión esférica
+                    const ballShape = new Ammo.btSphereShape(ballRadius);
+                    ballShape.setMargin(margin);
+                    pos.copy(raycaster.ray.direction);
+                    pos.add(raycaster.ray.origin);
+                    quat.set(0, 0, 0, 1);
+                    const ballBody = createRigidBody(ball, ballShape, ballMass, pos, quat);
 
-                pos.copy(raycaster.ray.direction);
-                pos.multiplyScalar(24);
-                ballBody.setLinearVelocity(new Ammo.btVector3(pos.x, pos.y, pos.z));
+                    pos.copy(raycaster.ray.direction);
+                    pos.multiplyScalar(24);
+                    ballBody.setLinearVelocity(new Ammo.btVector3(pos.x, pos.y, pos.z));
 
-                bolas.push(ball);
+                    bolas.push(ball);
 
-                if (jugando) {
-                    nBolas--;
+                    if (jugando) {
+                        nBolas--;
+                    }
                 }
             }
         }
