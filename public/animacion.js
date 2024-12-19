@@ -10,6 +10,7 @@ const clock = new THREE.Clock();
 const gui = new GUI();
 let elementosUI;
 let carpetaJuego;
+let selectorColocar;
 
 // Mundo físico con Ammo
 let physicsWorld;
@@ -177,7 +178,7 @@ function initGUI() {
         "Dificultad": "Fácil",
         "Empezar juego": empezarJuego
     }
-    gui.add(elementosUI, "Colocar cubos", true);
+    selectorColocar = gui.add(elementosUI, "Colocar cubos", true);
     
     carpetaJuego = gui.addFolder("Juego");
     carpetaJuego.add(elementosUI, "Número de cubos", 10, 30, 1);
@@ -223,33 +224,35 @@ function initInput() {
             }
         }
         else {
-            // Crea bola como cuerpo rígido y la lanza según coordenadas de ratón
-            const ballMass = 35;
-            const ballRadius = 0.4;
-            const ball = new THREE.Mesh(
-                new THREE.SphereGeometry(ballRadius, 14, 10),
-                ballMaterial
-            );
-            ball.castShadow = true;
-            ball.receiveShadow = true;
+            if (!jugando || nBolas > 0) {
+                // Crea bola como cuerpo rígido y la lanza según coordenadas de ratón
+                const ballMass = 35;
+                const ballRadius = 0.4;
+                const ball = new THREE.Mesh(
+                    new THREE.SphereGeometry(ballRadius, 14, 10),
+                    ballMaterial
+                );
+                ball.castShadow = true;
+                ball.receiveShadow = true;
     
-            //Ammo
-            //Estructura geométrica de colisión esférica
-            const ballShape = new Ammo.btSphereShape(ballRadius);
-            ballShape.setMargin(margin);
-            pos.copy(raycaster.ray.direction);
-            pos.add(raycaster.ray.origin);
-            quat.set(0, 0, 0, 1);
-            const ballBody = createRigidBody(ball, ballShape, ballMass, pos, quat);
+                //Ammo
+                //Estructura geométrica de colisión esférica
+                const ballShape = new Ammo.btSphereShape(ballRadius);
+                ballShape.setMargin(margin);
+                pos.copy(raycaster.ray.direction);
+                pos.add(raycaster.ray.origin);
+                quat.set(0, 0, 0, 1);
+                const ballBody = createRigidBody(ball, ballShape, ballMass, pos, quat);
 
-            pos.copy(raycaster.ray.direction);
-            pos.multiplyScalar(24);
-            ballBody.setLinearVelocity(new Ammo.btVector3(pos.x, pos.y, pos.z));
+                pos.copy(raycaster.ray.direction);
+                pos.multiplyScalar(24);
+                ballBody.setLinearVelocity(new Ammo.btVector3(pos.x, pos.y, pos.z));
 
-            bolas.push(ball);
+                bolas.push(ball);
 
-            if (jugando) {
-                nBolas--;
+                if (jugando) {
+                    nBolas--;
+                }
             }
         }
     });
@@ -397,6 +400,8 @@ function empezarJuego() {
     gui.hide();
     jugando = true;
     faseJuego = 0;
+    elementosUI["Colocar cubos"] = true;
+    infoJuego.style.color = "#000";
 
     nCubos = elementosUI["Número de cubos"];
     switch (elementosUI["Dificultad"]) {
@@ -428,17 +433,21 @@ function comprobarJuego() {
     else if (faseJuego == 1) {
         infoJuego.innerHTML = "Bolas disponibles: " + nBolas;
 
-        if(nBolas <= 0 || cubesOnFloor == 0) {
+        if((nBolas <= 0 && ballsOnFloor == 0) || cubesOnFloor == 0) {
             faseJuego = 2;
         }
     }
     else if(faseJuego == 2) {
+        jugando = false;
+        selectorColocar.updateDisplay();
         gui.show();
         if (cubesOnFloor == 0) {
-            infoJuego.innerHTML = "Has ganado"
+            infoJuego.innerHTML = "Has ganado";
+            infoJuego.style.color = "green";
         }
         else {
-            infoJuego.innerHTML = "Has perdido"
+            infoJuego.innerHTML = "Has perdido";
+            infoJuego.style.color = "red";
         }
     }
 }
