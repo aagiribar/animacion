@@ -125,9 +125,9 @@ Cuando el jugador expulse todos los cubos, o se quede sin disparos, el juego pas
 
 En esta fase se indicará al jugador si ha ganado o ha perdido en función de si ha podido expulsar todos los cubos de la plataforma con los disparos que tenía.
 
-![Contador del juego en la fase final si el jugador ha ganado](assets/readme/contador_fase_3_victoria.png)
+![Contador del juego en la fase final si el jugador ha ganado](assets/readme/contador_fase_3.png)
 
-![Contador del juego en la fase final si el jugador pierde](assets/readme/contador_fase_3.png)
+![Contador del juego en la fase final si el jugador pierde](assets/readme/contador_fase_3_derrota.png)
 
 Al finalizar aparece un botón al que permite al usuario finalizar la partida y volver al estado inicial de la simulación, en el que puede empezar otra partida.
 
