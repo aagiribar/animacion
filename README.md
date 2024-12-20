@@ -4,6 +4,11 @@ Animación y minijuego de física realizados con _three.js_ y _Ammo_.
 
 ![Imagen de la simulación](assets/readme/sim_completa.png)
 
+## Acceso a la version web
+
+La version web de este proyecto se encuentra en [este proyecto de glitch.com](https://animacion-agustin.glitch.me)
+
+
 ## Ejecución del proyecto en local
 
 A continuación, se detallan las instrucciones de ejecución del proyecto de forma local en caso de que la version web fallara.
@@ -122,7 +127,7 @@ En esta fase se indicará al jugador si ha ganado o ha perdido en función de si
 
 ![Contador del juego en la fase final si el jugador ha ganado](assets/readme/contador_fase_3_victoria.png)
 
-![Contador del juego en la fase final si el jugador pierde](assets/readme/contador_fase_3_derrota.png)
+![Contador del juego en la fase final si el jugador pierde](assets/readme/contador_fase_3.png)
 
 Al finalizar aparece un botón al que permite al usuario finalizar la partida y volver al estado inicial de la simulación, en el que puede empezar otra partida.
 
