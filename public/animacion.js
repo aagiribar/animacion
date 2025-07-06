@@ -3,17 +3,17 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 
 // Elementos de la simulación
-let escena, camara, renderer;
+let scene, camera, renderer;
 let textureLoader;
 let controls;
 const clock = new THREE.Clock();
 
 // Elementos de la interfaz de usuario
 const gui = new GUI();
-let elementosUI;
-let carpetaJuego;
-let selectorColocar;
-let botonTerminar;
+let UIelements;
+let gameFolder;
+let placeSelector;
+let endButton;
 
 // Mundo físico con Ammo
 let physicsWorld;
@@ -33,15 +33,15 @@ let tempBtVec3_1;
 
 // Variables para almacenar los objetos de la simulación
 let rigidBodies = [];
-let cubos = [];
-let bolas = [];
+let cubes = [];
+let balls = [];
 
 // Variables para contar cuantos elementos hay en la plataforma
 let cubesOnFloor = 0;
 let ballsOnFloor = 0;
 
 // Variable para almacenar el objeto que representa al suelo
-let suelo;
+let floor;
 
 // Raycaster
 const mouseCoords = new THREE.Vector2()
@@ -60,14 +60,14 @@ Ammo().then(function (AmmoLib) {
 
 // Elementos de inforación en pantalla
 let info;
-let infoCubos, infoBolas;
-let infoJuego;
+let infoCubes, infoBalls;
+let infoGame;
 
 // Variables para controlar el juego
-let jugando = false;
-let faseJuego;
+let playing = false;
+let gamePhase;
 
-let nCubos, nBolas;
+let nCubes, nBalls;
 
 // Objeto que almacena los uniforms para los fragment shaders
 let uniforms = {
@@ -104,18 +104,18 @@ function init() {
 // Función que inicializa los elementos gráficos
 function initGraphics() {
     // Creación de la escena
-    escena = new THREE.Scene();
+    scene = new THREE.Scene();
 
     // Creación de la cámara
-    camara = new THREE.PerspectiveCamera(
+    camera = new THREE.PerspectiveCamera(
         75,
         window.innerWidth / window.innerHeight,
         0.1,
         1000
     );
 
-    escena.background = new THREE.Color(0xbfd1e5);
-    camara.position.set(-14, 8, 16);
+    scene.background = new THREE.Color(0xbfd1e5);
+    camera.position.set(-14, 8, 16);
 
     // Creación del renderer
     renderer = new THREE.WebGLRenderer();
@@ -130,13 +130,13 @@ function initGraphics() {
     textureLoader = new THREE.TextureLoader();
 
     // Creación de controles de tipo orbital
-    controls = new OrbitControls(camara, renderer.domElement);
+    controls = new OrbitControls(camera, renderer.domElement);
     controls.target.set(0, 2, 0);
     controls.update();
 
     //Luces
     const ambientLight = new THREE.AmbientLight(0x707070);
-    escena.add(ambientLight);
+    scene.add(ambientLight);
 
     const light = new THREE.DirectionalLight(0xffffff, 1);
     light.position.set(-10, 18, 5);
@@ -153,7 +153,7 @@ function initGraphics() {
     light.shadow.mapSize.x = 1024;
     light.shadow.mapSize.y = 1024;
 
-    escena.add(light);
+    scene.add(light);
 
     //Redimensión de la ventana
     window.addEventListener("resize", onWindowResize);
@@ -190,7 +190,7 @@ function createObjects() {
     quat.set(0, 0, 0, 1);
 
     // Creación del suelo
-    suelo = createBoxWithPhysics(
+    floor = createBoxWithPhysics(
         40,
         1,
         40,
@@ -199,7 +199,7 @@ function createObjects() {
         quat,
         new THREE.MeshPhongMaterial({ color: 0xffffff })
     );
-    suelo.receiveShadow = true;
+    floor.receiveShadow = true;
 
     // Texturización del suelo
     textureLoader.load(
@@ -208,43 +208,43 @@ function createObjects() {
             texture.wrapS = THREE.RepeatWrapping;
             texture.wrapT = THREE.RepeatWrapping;
             texture.repeat.set(40, 40);
-            suelo.material.map = texture;
-            suelo.material.needsUpdate = true;
+            floor.material.map = texture;
+            floor.material.needsUpdate = true;
         }
     );
-    cubos.push(suelo);
+    cubes.push(floor);
 }
 
 // Función que inicializa los elementos de la interfaz de usuario
 function initGUI() {
     // Objeto que almacena los elementos de la interfaz de usuario
-    elementosUI = {
+    UIelements = {
         "Disparo con botón izquierdo": false,
         "Colocar cubos": true,
         "Número de cubos": 10,
         "Dificultad": "Fácil",
-        "Empezar juego": empezarJuego,
-        "Terminar juego": terminarJuego
+        "Empezar juego": startGame,
+        "Terminar juego": endGame
     }
 
     // Selector para seleccionar si se colocan cubos o se lanzan bolas
-    selectorColocar = gui.add(elementosUI, "Colocar cubos", true);
+    placeSelector = gui.add(UIelements, "Colocar cubos", true);
 
     // Selector para seleccioanar si se puede disparar/colocar cubos con el botón izquierdo del ratón
-    gui.add(elementosUI, "Disparo con botón izquierdo", false);
+    gui.add(UIelements, "Disparo con botón izquierdo", false);
 
     // Botón para terminar el juego
-    botonTerminar = gui.add(elementosUI, "Terminar juego");
-    botonTerminar.hide();   // Oculto desde el principio
+    endButton = gui.add(UIelements, "Terminar juego");
+    endButton.hide();   // Oculto desde el principio
 
     // Carpeta que contiene elementos de la UI para configurar el juego
-    carpetaJuego = gui.addFolder("Juego");
+    gameFolder = gui.addFolder("Juego");
     // Selector numérico para seleccionar el número de cubos que se deben colocar
-    carpetaJuego.add(elementosUI, "Número de cubos", 10, 30, 1);
+    gameFolder.add(UIelements, "Número de cubos", 10, 30, 1);
     // Selector de dificultad del juego
-    carpetaJuego.add(elementosUI, "Dificultad", ["Fácil", "Normal", "Dificil"]);
+    gameFolder.add(UIelements, "Dificultad", ["Fácil", "Normal", "Dificil"]);
     // Botón para empezar el juego
-    carpetaJuego.add(elementosUI, "Empezar juego");
+    gameFolder.add(UIelements, "Empezar juego");
 }
 
 // Función para inicializar los elementos de interacción de la simulación
@@ -252,7 +252,7 @@ function initInput() {
     // EventListener para gestionar las pulsaciones con el ratón
     document.addEventListener("mousedown", function(event) {
         // Se dispara según el modo de disparo seleccioando
-        if ((event.button == 2 && !elementosUI["Disparo con botón izquierdo"] || elementosUI["Disparo con botón izquierdo"])) {
+        if ((event.button == 2 && !UIelements["Disparo con botón izquierdo"] || UIelements["Disparo con botón izquierdo"])) {
             //Coordenadas del puntero
             mouseCoords.set(
                 (event.clientX / window.innerWidth) * 2 - 1,
@@ -260,13 +260,13 @@ function initInput() {
             );
     
             // Intersección, define rayo
-            raycaster.setFromCamera(mouseCoords, camara);
+            raycaster.setFromCamera(mouseCoords, camera);
 
             // Se detectan las intersecciones con el rayo
-            const intersecciones = raycaster.intersectObjects(cubos);
+            const intersecciones = raycaster.intersectObjects(cubes);
 
             // Se coloca un cubo en la posición de la plataforma pulsada
-            if (elementosUI["Colocar cubos"]) {
+            if (UIelements["Colocar cubos"]) {
                 if (intersecciones.length > 0) {
                     
                     // Se selecciona un color aleatorio para el cubo
@@ -291,12 +291,12 @@ function initInput() {
                     );
                     object.castShadow = true;
                     object.receiveShadow = true;
-                    cubos.push(object);
+                    cubes.push(object);
                 }
             }
             // Se dispara una bola
             else {
-                if (!jugando || nBolas > 0) {
+                if (!playing || nBalls > 0) {
                     // Crea bola como cuerpo rígido y la lanza según coordenadas de ratón
                     const ballMass = 35;
                     const ballRadius = 0.4;
@@ -320,10 +320,10 @@ function initInput() {
                     pos.multiplyScalar(24);
                     ballBody.setLinearVelocity(new Ammo.btVector3(pos.x, pos.y, pos.z));
 
-                    bolas.push(ball);
+                    balls.push(ball);
 
-                    if (jugando) {
-                        nBolas--;
+                    if (playing) {
+                        nBalls--;
                     }
                 }
             }
@@ -345,15 +345,15 @@ function initInfo() {
     info.style.fontFamily = 'Monospace';
     document.body.appendChild(info);
 
-    infoCubos = document.createElement("div");
-    infoCubos.innerHTML = "Cubos en la plataforma: " + cubesOnFloor;
-    info.appendChild(infoCubos);
+    infoCubes = document.createElement("div");
+    infoCubes.innerHTML = "Cubos en la plataforma: " + cubesOnFloor;
+    info.appendChild(infoCubes);
 
-    infoBolas = document.createElement("div");
-    infoBolas.innerHTML = "Bolas en la plataforma: " + ballsOnFloor;
-    info.appendChild(infoBolas);
+    infoBalls = document.createElement("div");
+    infoBalls.innerHTML = "Bolas en la plataforma: " + ballsOnFloor;
+    info.appendChild(infoBalls);
 
-    infoJuego = document.createElement("div");
+    infoGame = document.createElement("div");
 }
 
 // Función para crear un cubo con físicas
@@ -439,7 +439,7 @@ function createRigidBody(object, physicsShape, mass, pos, quat, vel, angVel) {
     object.userData.physicsBody = body;
     object.userData.collided = false;
 
-    escena.add(object);
+    scene.add(object);
     //Si tiene masa
     if (mass > 0) {
         rigidBodies.push(object);
@@ -455,8 +455,8 @@ function createRigidBody(object, physicsShape, mass, pos, quat, vel, angVel) {
 // Función a la que se llama cuando ocurre una redimensión de la ventana
 function onWindowResize() {
     // Se modifica la relación de aspecto de la camara
-    camara.aspect = window.innerWidth / window.innerHeight;
-    camara.updateProjectionMatrix();
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
   
     // Se actualiza el tamaño del render
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -480,8 +480,8 @@ function saveResolutionToUniforms() {
 function updateObjectsOnFloor() {
     // Actualización del contador de cubos
     cubesOnFloor = 0;
-    for (let i = 1; i < cubos.length; i++) {
-        const cubo = cubos[i];
+    for (let i = 1; i < cubes.length; i++) {
+        const cubo = cubes[i];
         
         if(cubo.position.y > -1) {
             cubesOnFloor++;
@@ -490,8 +490,8 @@ function updateObjectsOnFloor() {
 
     // Actualización del contador de bolas
     ballsOnFloor = 0;
-    for(let i = 0; i < bolas.length; i++) {
-        const bola = bolas[i];
+    for(let i = 0; i < balls.length; i++) {
+        const bola = balls[i];
 
         if(bola.position.y > -1) {
             ballsOnFloor++;
@@ -504,104 +504,104 @@ function updateObjectsOnFloor() {
 
 // Función que actualiza los elementos de información en pantalla relativos a los objetos situados sobre la plataforma
 function updateInfo() {
-    infoCubos.innerHTML = "Cubos en la plataforma: " + cubesOnFloor;
-    infoBolas.innerHTML = "Bolas en la plataforma: " + ballsOnFloor;
+    infoCubes.innerHTML = "Cubos en la plataforma: " + cubesOnFloor;
+    infoBalls.innerHTML = "Bolas en la plataforma: " + ballsOnFloor;
 }
 
 // Función que inicializa el juego
-function empezarJuego() {
+function startGame() {
     // Se esconden algunos elementos de la interfaz de usuario
-    carpetaJuego.hide();
-    selectorColocar.hide();
+    gameFolder.hide();
+    placeSelector.hide();
 
     // Se indica que se está jugando
-    jugando = true;
+    playing = true;
     // Se especifica que el juego se encuentra en la primera fase del juego
-    faseJuego = 0;
+    gamePhase = 0;
     // Se configura la simulación para colocar cubos
-    elementosUI["Colocar cubos"] = true;
+    UIelements["Colocar cubos"] = true;
     // Se cambia el color del elemento de información a negro
-    infoJuego.style.color = "#000";
+    infoGame.style.color = "#000";
 
     // Se obtiene el número de cubos seleccionados en la UI
-    nCubos = elementosUI["Número de cubos"];
+    nCubes = UIelements["Número de cubos"];
 
     // Si en la plataforma se encuentran más cubos de los seleccionados
     // se juega con ese número de cubos
-    if (cubesOnFloor > nCubos) {
-        nCubos = cubesOnFloor;
+    if (cubesOnFloor > nCubes) {
+        nCubes = cubesOnFloor;
     }
 
     // Se configura la dificulatad seleccionada
-    switch (elementosUI["Dificultad"]) {
+    switch (UIelements["Dificultad"]) {
         case "Fácil":
-            nBolas = Math.floor(nCubos * 0.75);
+            nBalls = Math.floor(nCubes * 0.75);
             break;
         case "Normal":
-            nBolas = Math.floor(nCubos * 0.50);
+            nBalls = Math.floor(nCubes * 0.50);
             break;
         case "Dificil":
-            nBolas = Math.floor(nCubos * 0.33);
+            nBalls = Math.floor(nCubes * 0.33);
             break;
         default:
-            nBolas = Math.floor(nCubos * 0.75);
+            nBalls = Math.floor(nCubes * 0.75);
             break;
     };
 
-    info.appendChild(infoJuego);
+    info.appendChild(infoGame);
 }
 
 // Función que finaliza el juego
-function terminarJuego() {
+function endGame() {
     // Se indica que ya no se está jugando
-    jugando = false;
+    playing = false;
     // Se esconde el botón de terminar juego
-    botonTerminar.hide();
+    endButton.hide();
 
     // Se actualizan y muestran los elementos de la UI que estaban ocultos
-    selectorColocar.updateDisplay();
-    selectorColocar.show();
-    carpetaJuego.show();
+    placeSelector.updateDisplay();
+    placeSelector.show();
+    gameFolder.show();
 }
 
 // Función que comprueba el estado del juego
-function comprobarJuego() {
+function checkGame() {
     // Fase inicial: colocación de cubos
-    if (faseJuego == 0) {
+    if (gamePhase == 0) {
         // Se muestran cuantos cubos faltan por colocar
-        infoJuego.innerHTML = "Cubos pendientes de colocar: " + (nCubos - cubesOnFloor);
-        if ((nCubos - cubesOnFloor) <= 0) {
+        infoGame.innerHTML = "Cubos pendientes de colocar: " + (nCubes - cubesOnFloor);
+        if ((nCubes - cubesOnFloor) <= 0) {
             // Si se han colocado todos los cubos, avanza a la siguiente fase
-            faseJuego = 1;
-            elementosUI["Colocar cubos"] = false;
+            gamePhase = 1;
+            UIelements["Colocar cubos"] = false;
         }
     }
     // Fase intermedia: lanzamiento de bolas
-    else if (faseJuego == 1) {
+    else if (gamePhase == 1) {
         // Se muestran cuantas bolas le quedan al jugador
-        infoJuego.innerHTML = "Bolas disponibles: " + nBolas;
+        infoGame.innerHTML = "Bolas disponibles: " + nBalls;
 
-        if((nBolas <= 0 && ballsOnFloor == 0) || cubesOnFloor == 0) {
+        if((nBalls <= 0 && ballsOnFloor == 0) || cubesOnFloor == 0) {
             // Si ya no hay bolas disponibles ni están sobre la plataforma o
             // no quedan cubos en la plataforma,
             // se avanza a la siguiente fase
-            faseJuego = 2;
+            gamePhase = 2;
         }
     }
     // Fase final: fin del juego
-    else if(faseJuego == 2) {
+    else if(gamePhase == 2) {
         // Se muestra el botón de terminar juego
-        botonTerminar.show();
+        endButton.show();
 
         // Si no hay cubos en la plataforma el jugador gana
         if (cubesOnFloor == 0) {
-            infoJuego.innerHTML = "Has ganado";
-            infoJuego.style.color = "green";
+            infoGame.innerHTML = "Has ganado";
+            infoGame.style.color = "green";
         }
         // Se hay cubos en la plataforma el jugador pierde
         else {
-            infoJuego.innerHTML = "Has perdido";
-            infoJuego.style.color = "red";
+            infoGame.innerHTML = "Has perdido";
+            infoGame.style.color = "red";
         }
     }
 }
@@ -637,12 +637,12 @@ function animationLoop() {
     updateObjectsOnFloor();
 
     // Si se está jugando se comprueba el estado del juego
-    if(jugando) {
-        comprobarJuego();
+    if(playing) {
+        checkGame();
     }
 
     // Se renderiza la escana
-    renderer.render(escena, camara);
+    renderer.render(scene, camera);
 }
 
 // Función que actualiza las físicas de la simulación
