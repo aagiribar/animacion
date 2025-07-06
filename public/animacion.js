@@ -69,6 +69,22 @@ let faseJuego;
 
 let nCubos, nBolas;
 
+// Objeto que almacena los uniforms para los fragment shaders
+let uniforms = {
+    u_time: {
+        type: "f",
+        value: 1.0
+    },
+    u_resolution: {
+        type: "v2",
+        value: new THREE.Vector2()
+    },
+    u_mouse: {
+        type: "v2",
+        value: new THREE.Vector2()
+    }
+}
+
 // Función que inicializa la simulación
 function init() {
     // Elementos gráficos
@@ -106,6 +122,9 @@ function initGraphics() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
     document.body.appendChild(renderer.domElement);
+
+    // Almacena el valor de la resolución en uniforms por primera vez
+    saveResolutionToUniforms();
 
     // TextureLoader para cargar texturas
     textureLoader = new THREE.TextureLoader();
@@ -265,7 +284,10 @@ function initInput() {
                         THREE.MathUtils.randInt(1, 2), 
                         pos, 
                         quat, 
-                        new THREE.MeshPhongMaterial({ color: c })
+                        new THREE.ShaderMaterial({
+                            uniforms: uniforms, 
+                            fragmentShader: getCubeShader()
+                        })
                     );
                     object.castShadow = true;
                     object.receiveShadow = true;
@@ -438,6 +460,20 @@ function onWindowResize() {
   
     // Se actualiza el tamaño del render
     renderer.setSize(window.innerWidth, window.innerHeight);
+
+    // Se almacena la resolución de la ventana en el objeto uniforms
+    saveResolutionToUniforms();
+}
+
+// Evento de ratón
+document.onmousemove = function (evt) {
+    uniforms.u_mouse.value.x = evt.pageX / window.innerWidth;
+    uniforms.u_mouse.value.y = evt.pageY / window.innerHeight;
+};
+
+function saveResolutionToUniforms() {
+    uniforms.u_resolution.value.x = renderer.domElement.width;
+    uniforms.u_resolution.value.y = renderer.domElement.height;
 }
 
 // Función que actualiza los contadores de objetos sobre la plataforma
@@ -570,9 +606,29 @@ function comprobarJuego() {
     }
 }
 
+function getCubeShader() {
+    return `
+    #ifdef GL_ES
+    precision mediump float;
+    #endif
+
+    uniform vec2 u_resolution;
+    uniform vec2 u_mouse;
+    uniform float u_time;
+
+    void main() {
+	    vec2 st = gl_FragCoord.xy/u_resolution;
+	    gl_FragColor = vec4(st.x,st.y,0.0,1.0);
+    }
+    `
+}
+
 // Bucle principal de la aplicación
 function animationLoop() {
     requestAnimationFrame(animationLoop);
+
+    // Incrementa el tiempo
+    uniforms.u_time.value += 0.005;
 
     // Se actualiza el estado de los objetos físicos
     const deltaTime = clock.getDelta();
