@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
+import { GUI } from "lil-gui";
 
 // Elementos de la simulación
 let scene, camera, renderer;
@@ -50,9 +50,13 @@ let raycaster = new THREE.Raycaster();
 // Material para las bolas lanzadas
 const ballMaterial = new THREE.MeshPhongMaterial({ color: 0x202020 });
 
+console.log(Ammo);
+
 //Inicialización ammo
 Ammo().then(function (AmmoLib) {
     Ammo = AmmoLib;
+
+    console.log(Ammo);
   
     init();
     animationLoop();
