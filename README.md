@@ -4,10 +4,6 @@ Animación y minijuego de física realizados con _three.js_ y _Ammo_.
 
 ![Imagen de la simulación](assets/readme/sim_completa.png)
 
-## Acceso a la version web
-
-La version web de este proyecto se encuentra en [este proyecto de glitch.com](https://animacion-agustin.glitch.me)
-
 
 ## Ejecución del proyecto en local
 
