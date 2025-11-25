@@ -1,19 +1,12 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { GUI } from "lil-gui";
+import { initGUI, UIelements, gameFolder, placeSelector, endButton } from "/modules/gui.js";
 
 // Elementos de la simulación
 let scene, camera, renderer;
 let textureLoader;
 let controls;
 const clock = new THREE.Clock();
-
-// Elementos de la interfaz de usuario
-const gui = new GUI();
-let UIelements;
-let gameFolder;
-let placeSelector;
-let endButton;
 
 // Mundo físico con Ammo
 let physicsWorld;
@@ -53,8 +46,6 @@ const ballMaterial = new THREE.MeshPhongMaterial({ color: 0x202020 });
 //Inicialización ammo
 Ammo().then(function (AmmoLib) {
     Ammo = AmmoLib;
-
-    console.log(Ammo);
   
     init();
     animationLoop();
@@ -196,38 +187,6 @@ function createObjects() {
         }
     );
     cubes.push(floor);
-}
-
-// Función que inicializa los elementos de la interfaz de usuario
-function initGUI() {
-    // Objeto que almacena los elementos de la interfaz de usuario
-    UIelements = {
-        "Disparo con botón izquierdo": false,
-        "Colocar cubos": true,
-        "Número de cubos": 10,
-        "Dificultad": "Fácil",
-        "Empezar juego": startGame,
-        "Terminar juego": endGame
-    }
-
-    // Selector para seleccionar si se colocan cubos o se lanzan bolas
-    placeSelector = gui.add(UIelements, "Colocar cubos", true);
-
-    // Selector para seleccioanar si se puede disparar/colocar cubos con el botón izquierdo del ratón
-    gui.add(UIelements, "Disparo con botón izquierdo", false);
-
-    // Botón para terminar el juego
-    endButton = gui.add(UIelements, "Terminar juego");
-    endButton.hide();   // Oculto desde el principio
-
-    // Carpeta que contiene elementos de la UI para configurar el juego
-    gameFolder = gui.addFolder("Juego");
-    // Selector numérico para seleccionar el número de cubos que se deben colocar
-    gameFolder.add(UIelements, "Número de cubos", 10, 30, 1);
-    // Selector de dificultad del juego
-    gameFolder.add(UIelements, "Dificultad", ["Fácil", "Normal", "Dificil"]);
-    // Botón para empezar el juego
-    gameFolder.add(UIelements, "Empezar juego");
 }
 
 // Función para inicializar los elementos de interacción de la simulación
@@ -475,7 +434,7 @@ function updateInfo() {
 }
 
 // Función que inicializa el juego
-function startGame() {
+export function startGame() {
     // Se esconden algunos elementos de la interfaz de usuario
     gameFolder.hide();
     placeSelector.hide();
@@ -518,7 +477,7 @@ function startGame() {
 }
 
 // Función que finaliza el juego
-function endGame() {
+export function endGame() {
     // Se indica que ya no se está jugando
     playing = false;
     // Se esconde el botón de terminar juego
