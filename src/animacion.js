@@ -50,8 +50,6 @@ let raycaster = new THREE.Raycaster();
 // Material para las bolas lanzadas
 const ballMaterial = new THREE.MeshPhongMaterial({ color: 0x202020 });
 
-console.log(Ammo);
-
 //Inicialización ammo
 Ammo().then(function (AmmoLib) {
     Ammo = AmmoLib;
