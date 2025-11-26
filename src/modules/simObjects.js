@@ -3,8 +3,8 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 // Elementos de la simulación
 export let scene, camera, renderer;
-export let textureLoader;
 let controls;
+
 export const clock = new THREE.Clock();
 
 // Función que inicializa los elementos gráficos
@@ -28,9 +28,6 @@ export function initGraphics() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
     document.body.appendChild(renderer.domElement);
-
-    // TextureLoader para cargar texturas
-    textureLoader = new THREE.TextureLoader();
 
     // Creación de controles de tipo orbital
     controls = new OrbitControls(camera, renderer.domElement);

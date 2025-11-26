@@ -1,7 +1,7 @@
-import { initGUI, UIelements, gameFolder, placeSelector, endButton, initInfo, updateObjectsOnFloor, infoGame, cubesOnFloor, ballsOnFloor, info } from "./modules/gui.js";
-import { initGraphics, scene, camera, renderer, textureLoader, clock } from "./modules/simObjects.js";
-import { initPhysics, pos, quat, margin, physicsWorld, updatePhysics } from "./modules/world.js";
-import { createObjects, cubes, createBoxWithPhysics, ballMaterial, createRigidBody, balls } from "./modules/gameObjects.js";
+import { initGUI, initInfo, updateObjectsOnFloor } from "./modules/gui.js";
+import { initGraphics, scene, camera, renderer, clock } from "./modules/simObjects.js";
+import { initPhysics, updatePhysics } from "./modules/world.js";
+import { createObjects } from "./modules/gameObjects.js";
 import { initInput } from "./modules/input.js";
 import { playing, checkGame } from "./modules/game.js";
 

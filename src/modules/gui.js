@@ -81,22 +81,22 @@ export function updateObjectsOnFloor() {
     cubesOnFloor = 0;
     for (let i = 1; i < cubes.length; i++) {
         const cubo = cubes[i];
-        
-        if(cubo.position.y > -1) {
+
+        if (cubo.position.y > -1) {
             cubesOnFloor++;
         }
     }
 
     // Actualización del contador de bolas
     ballsOnFloor = 0;
-    for(let i = 0; i < balls.length; i++) {
+    for (let i = 0; i < balls.length; i++) {
         const bola = balls[i];
 
-        if(bola.position.y > -1) {
+        if (bola.position.y > -1) {
             ballsOnFloor++;
         }
     }
-    
+
     // Se actualiza la información en pantalla
     updateInfo();
 }

@@ -4,7 +4,8 @@ import { gameFolder, placeSelector, infoGame, cubesOnFloor, UIelements, info, en
 export let playing = false;
 let gamePhase;
 
-export let nCubes, nBalls;
+let nCubes;
+export let nBalls;
 
 // Función que inicializa el juego
 export function startGame() {
@@ -79,7 +80,7 @@ export function checkGame() {
         // Se muestran cuantas bolas le quedan al jugador
         infoGame.innerHTML = "Bolas disponibles: " + nBalls;
 
-        if((nBalls <= 0 && ballsOnFloor == 0) || cubesOnFloor == 0) {
+        if ((nBalls <= 0 && ballsOnFloor == 0) || cubesOnFloor == 0) {
             // Si ya no hay bolas disponibles ni están sobre la plataforma o
             // no quedan cubos en la plataforma,
             // se avanza a la siguiente fase
@@ -87,7 +88,7 @@ export function checkGame() {
         }
     }
     // Fase final: fin del juego
-    else if(gamePhase == 2) {
+    else if (gamePhase == 2) {
         // Se muestra el botón de terminar juego
         endButton.show();
 

@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { pos, quat, margin, physicsWorld } from "./world.js";
-import { scene, textureLoader } from "./simObjects.js";
+import { scene } from "./simObjects.js";
 
 // Variables para almacenar los objetos de la simulación
 export let rigidBodies = [];
@@ -12,6 +12,8 @@ let floor;
 
 // Material para las bolas lanzadas
 export const ballMaterial = new THREE.MeshPhongMaterial({ color: 0x202020 });
+
+let textureLoader;
 
 // Función que crea los objetos iniciales de la simulación
 export function createObjects() {
@@ -30,6 +32,9 @@ export function createObjects() {
         new THREE.MeshPhongMaterial({ color: 0xffffff })
     );
     floor.receiveShadow = true;
+
+    // TextureLoader para cargar texturas
+    textureLoader = new THREE.TextureLoader();
 
     // Texturización del suelo
     textureLoader.load(
@@ -99,11 +104,11 @@ export function createRigidBody(object, physicsShape, mass, pos, quat, vel, angV
     transform.setOrigin(new Ammo.btVector3(pos.x, pos.y, pos.z));
     transform.setRotation(new Ammo.btQuaternion(quat.x, quat.y, quat.z, quat.w));
     const motionState = new Ammo.btDefaultMotionState(transform);
-    
+
     //Inercia inicial y parámetros de rozamiento, velocidad
     const localInertia = new Ammo.btVector3(0, 0, 0);
     physicsShape.calculateLocalInertia(mass, localInertia);
-    
+
     //Crea el cuerpo
     const rbInfo = new Ammo.btRigidBodyConstructionInfo(
         mass,

@@ -47,22 +47,22 @@ export function initPhysics() {
 export function updatePhysics(deltaTime) {
     // Avanza la simulación en función del tiempo
     physicsWorld.stepSimulation(deltaTime, 10);
-  
+
     // Actualiza cuerpos rígidos
     for (let i = 0, il = rigidBodies.length; i < il; i++) {
-      const objThree = rigidBodies[i];
-      const objPhys = objThree.userData.physicsBody;
-      //Obtiene posición y rotación
-      const ms = objPhys.getMotionState();
-      //Actualiza la correspondiente primitiva gráfica asociada
-      if (ms) {
-        ms.getWorldTransform(transformAux1);
-        const p = transformAux1.getOrigin();
-        const q = transformAux1.getRotation();
-        objThree.position.set(p.x(), p.y(), p.z());
-        objThree.quaternion.set(q.x(), q.y(), q.z(), q.w());
-  
-        objThree.userData.collided = false;
-      }
+        const objThree = rigidBodies[i];
+        const objPhys = objThree.userData.physicsBody;
+        //Obtiene posición y rotación
+        const ms = objPhys.getMotionState();
+        //Actualiza la correspondiente primitiva gráfica asociada
+        if (ms) {
+            ms.getWorldTransform(transformAux1);
+            const p = transformAux1.getOrigin();
+            const q = transformAux1.getRotation();
+            objThree.position.set(p.x(), p.y(), p.z());
+            objThree.quaternion.set(q.x(), q.y(), q.z(), q.w());
+
+            objThree.userData.collided = false;
+        }
     }
-  }
+}
