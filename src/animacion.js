@@ -13,7 +13,10 @@ Ammo().then(function (AmmoLib) {
     animationLoop();
 });
 
-// Función que inicializa la simulación
+/**
+ * Función que inicializa la simulación, creando los elementos gráficos, físicos, los objetos del juego,
+ * la interacción del usuario, la información en pantalla y la interfaz gráfica.
+ */
 function init() {
     // Elementos gráficos
     initGraphics();
@@ -29,7 +32,11 @@ function init() {
     initGUI();
 }
 
-// Bucle principal de la aplicación
+/**
+ * Función que implementa el bucle de animación de la simulación.
+ * En cada iteración se actualizan los objetos físicos, los contadores de objetos encima de la plataforma,
+ * se comprueba el estado del juego si se está jugando y se renderiza la escena.
+ */
 function animationLoop() {
     requestAnimationFrame(animationLoop);
 

@@ -4,9 +4,9 @@ import { cubes, balls } from "./gameObjects.js";
 
 // Elementos de la interfaz de usuario
 const gui = new GUI();
-export let UIelements;
+export let uiElements;
 export let gameFolder;
-export let placeSelector;
+export let placeCubesSelector;
 export let endButton;
 
 // Variables para contar cuantos elementos hay en la plataforma
@@ -18,10 +18,12 @@ export let info;
 let infoCubes, infoBalls;
 export let infoGame;
 
-// Función que inicializa los elementos de la interfaz de usuario
+/**
+ * Función que inicializa los elementos de la interfaz de usuario
+ */
 export function initGUI() {
     // Objeto que almacena los elementos de la interfaz de usuario
-    UIelements = {
+    uiElements = {
         "Disparo con botón izquierdo": false,
         "Colocar cubos": true,
         "Número de cubos": 10,
@@ -31,26 +33,28 @@ export function initGUI() {
     }
 
     // Selector para seleccionar si se colocan cubos o se lanzan bolas
-    placeSelector = gui.add(UIelements, "Colocar cubos", true);
+    placeCubesSelector = gui.add(uiElements, "Colocar cubos", true);
 
     // Selector para seleccioanar si se puede disparar/colocar cubos con el botón izquierdo del ratón
-    gui.add(UIelements, "Disparo con botón izquierdo", false);
+    gui.add(uiElements, "Disparo con botón izquierdo", false);
 
     // Botón para terminar el juego
-    endButton = gui.add(UIelements, "Terminar juego");
+    endButton = gui.add(uiElements, "Terminar juego");
     endButton.hide();   // Oculto desde el principio
 
     // Carpeta que contiene elementos de la UI para configurar el juego
     gameFolder = gui.addFolder("Juego");
     // Selector numérico para seleccionar el número de cubos que se deben colocar
-    gameFolder.add(UIelements, "Número de cubos", 10, 30, 1);
+    gameFolder.add(uiElements, "Número de cubos", 10, 30, 1);
     // Selector de dificultad del juego
-    gameFolder.add(UIelements, "Dificultad", ["Fácil", "Normal", "Dificil"]);
+    gameFolder.add(uiElements, "Dificultad", ["Fácil", "Normal", "Dificil"]);
     // Botón para empezar el juego
-    gameFolder.add(UIelements, "Empezar juego");
+    gameFolder.add(uiElements, "Empezar juego");
 }
 
-// Función para inicializar los elementos de información en pantalla
+/**
+ * Función que inicializa los elementos de información en pantalla
+ */
 export function initInfo() {
     info = document.createElement('div');
     info.style.position = 'absolute';
@@ -75,14 +79,16 @@ export function initInfo() {
     infoGame = document.createElement("div");
 }
 
-// Función que actualiza los contadores de objetos sobre la plataforma
+/**
+ * Función que actualiza los contadores de objetos sobre la plataforma
+ */
 export function updateObjectsOnFloor() {
     // Actualización del contador de cubos
     cubesOnFloor = 0;
     for (let i = 1; i < cubes.length; i++) {
-        const cubo = cubes[i];
+        const cube = cubes[i];
 
-        if (cubo.position.y > -1) {
+        if (cube.position.y > -1) {
             cubesOnFloor++;
         }
     }
@@ -90,9 +96,9 @@ export function updateObjectsOnFloor() {
     // Actualización del contador de bolas
     ballsOnFloor = 0;
     for (let i = 0; i < balls.length; i++) {
-        const bola = balls[i];
+        const ball = balls[i];
 
-        if (bola.position.y > -1) {
+        if (ball.position.y > -1) {
             ballsOnFloor++;
         }
     }
@@ -101,7 +107,9 @@ export function updateObjectsOnFloor() {
     updateInfo();
 }
 
-// Función que actualiza los elementos de información en pantalla relativos a los objetos situados sobre la plataforma
+/**
+ * Función que actualiza los elementos de información en pantalla relativos a los objetos situados sobre la plataforma
+ */
 function updateInfo() {
     infoCubes.innerHTML = "Cubos en la plataforma: " + cubesOnFloor;
     infoBalls.innerHTML = "Bolas en la plataforma: " + ballsOnFloor;

@@ -11,6 +11,7 @@ let solver;
 
 export const margin = 0.05
 
+// Vectores y cuaterniones reutilizables
 export const pos = new THREE.Vector3();
 export const quat = new THREE.Quaternion();
 
@@ -18,7 +19,9 @@ export const quat = new THREE.Quaternion();
 let transformAux1;
 let tempBtVec3_1;
 
-// Función que inicializa las físicas de la simulación
+/**
+ * Función que inicializa las físicas de la simulación con Ammo.js
+ */
 export function initPhysics() {
     // Colisiones
     collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
@@ -42,8 +45,10 @@ export function initPhysics() {
     tempBtVec3_1 = new Ammo.btVector3(0, 0, 0);
 }
 
-// Función que actualiza las físicas de la simulación
-// deltaTime: Diferencia de tiempo con respecto a la actualización anterior
+/**
+ * Función que actualiza las físicas de la simulación
+ * @param {Number} deltaTime Diferencia de tiempo con respecto a la actualización anterior
+ */
 export function updatePhysics(deltaTime) {
     // Avanza la simulación en función del tiempo
     physicsWorld.stepSimulation(deltaTime, 10);

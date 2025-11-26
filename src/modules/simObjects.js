@@ -3,11 +3,16 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 // Elementos de la simulación
 export let scene, camera, renderer;
+
+// Controles de la cámara
 let controls;
 
+// Reloj para medir el tiempo entre frames
 export const clock = new THREE.Clock();
 
-// Función que inicializa los elementos gráficos
+/**
+ * Función que inicializa la escena, cámara, renderer, controles y luces.
+ */
 export function initGraphics() {
     // Creación de la escena
     scene = new THREE.Scene();
@@ -59,7 +64,9 @@ export function initGraphics() {
     window.addEventListener("resize", onWindowResize);
 }
 
-// Función a la que se llama cuando ocurre una redimensión de la ventana
+/**
+ * Función que maneja la redimensión de la ventana.
+ */
 function onWindowResize() {
     // Se modifica la relación de aspecto de la camara
     camera.aspect = window.innerWidth / window.innerHeight;

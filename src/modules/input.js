@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import { UIelements } from "./gui.js";
+import { uiElements } from "./gui.js";
 import { camera } from "./simObjects.js";
-import { cubes, createBoxWithPhysics, ballMaterial, createRigidBody, balls } from "./gameObjects.js";
+import { cubes, balls, createBoxWithPhysics, createRigidBody, ballMaterial } from "./gameObjects.js";
 import { pos, quat, margin } from "./world.js";
 import { playing, nBalls, decrementNBalls } from "./game.js";
 
@@ -9,12 +9,14 @@ import { playing, nBalls, decrementNBalls } from "./game.js";
 const mouseCoords = new THREE.Vector2()
 let raycaster = new THREE.Raycaster();
 
-// Función para inicializar los elementos de interacción de la simulación
+/**
+ * Función para inicializar los elementos de interacción de la simulación
+ */
 export function initInput() {
     // EventListener para gestionar las pulsaciones con el ratón
     document.addEventListener("mousedown", function (event) {
         // Se dispara según el modo de disparo seleccioando
-        if ((event.button == 2 && !UIelements["Disparo con botón izquierdo"] || UIelements["Disparo con botón izquierdo"])) {
+        if ((event.button == 2 && !uiElements["Disparo con botón izquierdo"] || uiElements["Disparo con botón izquierdo"])) {
             //Coordenadas del puntero
             mouseCoords.set(
                 (event.clientX / window.innerWidth) * 2 - 1,
@@ -25,17 +27,17 @@ export function initInput() {
             raycaster.setFromCamera(mouseCoords, camera);
 
             // Se detectan las intersecciones con el rayo
-            const intersecciones = raycaster.intersectObjects(cubes);
+            const intersections = raycaster.intersectObjects(cubes);
 
             // Se coloca un cubo en la posición de la plataforma pulsada
-            if (UIelements["Colocar cubos"]) {
-                if (intersecciones.length > 0) {
+            if (uiElements["Colocar cubos"]) {
+                if (intersections.length > 0) {
 
                     // Se selecciona un color aleatorio para el cubo
                     var c = new THREE.Color();
                     c.set(THREE.MathUtils.randInt(0, Math.pow(2, 24) - 1));
 
-                    pos.set(intersecciones[0].point.x, intersecciones[0].point.y + 2, intersecciones[0].point.z);
+                    pos.set(intersections[0].point.x, intersections[0].point.y + 2, intersections[0].point.z);
                     quat.set(0, 0, 0, 1);
 
                     // Se crea el cubo de dimensiones y masa aleatorias

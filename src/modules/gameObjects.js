@@ -13,9 +13,12 @@ let floor;
 // Material para las bolas lanzadas
 export const ballMaterial = new THREE.MeshPhongMaterial({ color: 0x202020 });
 
+// Cargador de texturas
 let textureLoader;
 
-// Función que crea los objetos iniciales de la simulación
+/**
+ * Función que crea los objetos iniciales de la simulación, incluyendo el suelo texturizado.
+ */
 export function createObjects() {
     // Suelo
     pos.set(0, -0.5, 0);
@@ -50,12 +53,17 @@ export function createObjects() {
     cubes.push(floor);
 }
 
-// Función para crear un cubo con físicas
-// sx, sy, sz: Dimensiones del cubo
-// mass: Masa del cubo
-// pos: Vector con la posición del cubo
-// quat: Cuaternión para determinar la rotación del cubo
-// material: Material del cubo
+/**
+ * Función que crea un cubo con físicas
+ * @param {Number} sx Dimensión del cubo en X 
+ * @param {Number} sy Dimensión del cubo en Y
+ * @param {Number} sz Dimensión del cubo en Z
+ * @param {Number} mass Masa del cubo
+ * @param {THREE.Vector3} pos Posición del cubo
+ * @param {THREE.Vector3} quat Cuaternión del cubo
+ * @param {THREE.Material} material Material del cubo
+ * @returns Objeto de Three.js que representa el cubo
+ */
 export function createBoxWithPhysics(sx, sy, sz, mass, pos, quat, material) {
     // Se crea el cubo como objeto de Three.js
     const object = new THREE.Mesh(
@@ -75,14 +83,17 @@ export function createBoxWithPhysics(sx, sy, sz, mass, pos, quat, material) {
     return object;
 }
 
-// Función que crea un objeto rígido con físicas
-// object: Objeto de Three.js
-// physicsShape: Forma física de Ammo
-// mass: Masa del objeto
-// pos: Vector con la posición del objeto
-// quat: Cuaternión para determinar la rotación del objeto
-// vel: Velocidad del objeto
-// angVel: Velocidad angular del objeto
+/**
+ * Función que crea un objeto rígido con físicas
+ * @param {THREE.Object3D} object Objeto de Three.js
+ * @param {*} physicsShape Forma física de Ammo
+ * @param {Number} mass Masa del objeto
+ * @param {THREE.Vector3} pos Posición del objeto
+ * @param {THREE.Vector3} quat Cuaternión del objeto
+ * @param {Number} vel Velocidad del objeto
+ * @param {Number} angVel Velocidad angular del objeto
+ * @returns Objeto rígido de Ammo
+ */
 export function createRigidBody(object, physicsShape, mass, pos, quat, vel, angVel) {
     //Posición
     if (pos) {

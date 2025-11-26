@@ -1,56 +1,72 @@
-import { gameFolder, placeSelector, infoGame, cubesOnFloor, UIelements, info, endButton, ballsOnFloor } from "./gui.js";
+import { 
+    gameFolder, 
+    placeCubesSelector, 
+    infoGame, 
+    info, 
+    cubesOnFloor, 
+    ballsOnFloor,
+    uiElements, 
+    endButton 
+} from "./gui.js";
 
 // Variables para controlar el juego
 export let playing = false;
 let gamePhase;
 
-let nCubes;
+// Número de cubos seleccionados para colocar
+let nSelectedCubes;
+
+// Número de bolas disponibles para lanzar
 export let nBalls;
 
-// Función que inicializa el juego
+/**
+ * Función que inicia el juego configurando las variables necesarias y ocultando los elementos de la UI correspondientes.
+ */
 export function startGame() {
     // Se esconden algunos elementos de la interfaz de usuario
     gameFolder.hide();
-    placeSelector.hide();
+    placeCubesSelector.hide();
 
     // Se indica que se está jugando
     playing = true;
     // Se especifica que el juego se encuentra en la primera fase del juego
     gamePhase = 0;
     // Se configura la simulación para colocar cubos
-    UIelements["Colocar cubos"] = true;
+    uiElements["Colocar cubos"] = true;
     // Se cambia el color del elemento de información a negro
     infoGame.style.color = "#000";
 
     // Se obtiene el número de cubos seleccionados en la UI
-    nCubes = UIelements["Número de cubos"];
+    nSelectedCubes = uiElements["Número de cubos"];
 
     // Si en la plataforma se encuentran más cubos de los seleccionados
     // se juega con ese número de cubos
-    if (cubesOnFloor > nCubes) {
-        nCubes = cubesOnFloor;
+    if (cubesOnFloor > nSelectedCubes) {
+        nSelectedCubes = cubesOnFloor;
     }
 
     // Se configura la dificulatad seleccionada
-    switch (UIelements["Dificultad"]) {
+    switch (uiElements["Dificultad"]) {
         case "Fácil":
-            nBalls = Math.floor(nCubes * 0.75);
+            nBalls = Math.floor(nSelectedCubes * 0.75);
             break;
         case "Normal":
-            nBalls = Math.floor(nCubes * 0.50);
+            nBalls = Math.floor(nSelectedCubes * 0.50);
             break;
         case "Dificil":
-            nBalls = Math.floor(nCubes * 0.33);
+            nBalls = Math.floor(nSelectedCubes * 0.33);
             break;
         default:
-            nBalls = Math.floor(nCubes * 0.75);
+            nBalls = Math.floor(nSelectedCubes * 0.75);
             break;
     };
 
     info.appendChild(infoGame);
 }
 
-// Función que finaliza el juego
+/**
+ * Función que finaliza el juego, mostrando los elementos de la UI correspondientes.
+ */
 export function endGame() {
     // Se indica que ya no se está jugando
     playing = false;
@@ -58,21 +74,23 @@ export function endGame() {
     endButton.hide();
 
     // Se actualizan y muestran los elementos de la UI que estaban ocultos
-    placeSelector.updateDisplay();
-    placeSelector.show();
+    placeCubesSelector.updateDisplay();
+    placeCubesSelector.show();
     gameFolder.show();
 }
 
-// Función que comprueba el estado del juego
+/**
+ * Función que comprueba el estado del juego y avanza entre las diferentes fases del mismo.
+ */
 export function checkGame() {
     // Fase inicial: colocación de cubos
     if (gamePhase == 0) {
         // Se muestran cuantos cubos faltan por colocar
-        infoGame.innerHTML = "Cubos pendientes de colocar: " + (nCubes - cubesOnFloor);
-        if ((nCubes - cubesOnFloor) <= 0) {
+        infoGame.innerHTML = "Cubos pendientes de colocar: " + (nSelectedCubes - cubesOnFloor);
+        if ((nSelectedCubes - cubesOnFloor) <= 0) {
             // Si se han colocado todos los cubos, avanza a la siguiente fase
             gamePhase = 1;
-            UIelements["Colocar cubos"] = false;
+            uiElements["Colocar cubos"] = false;
         }
     }
     // Fase intermedia: lanzamiento de bolas
@@ -105,6 +123,9 @@ export function checkGame() {
     }
 }
 
+/**
+ * Función que decrementa el número de bolas disponibles para lanzar.
+ */
 export function decrementNBalls() {
     nBalls--;
 }
