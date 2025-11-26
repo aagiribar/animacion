@@ -4,6 +4,12 @@ Animación y minijuego de física realizados con __Three.js__ y __Ammo.js__.
 
 ![Imagen de la simulación](assets/readme/sim_completa.png)
 
+## Acceso a la versión web y a vídeo demostrativo
+
+La versión web de este proyecto se encuentra en [este sandbox de codesandbox](https://n6dm25.csb.app/).
+
+El código se puede acceder desde [este enlace](https://codesandbox.io/p/sandbox/animacion-n6dm25).
+
 
 ## Ejecución del proyecto en local
 
