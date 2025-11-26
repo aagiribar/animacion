@@ -114,3 +114,53 @@ function updateInfo() {
     infoCubes.innerHTML = "Cubos en la plataforma: " + cubesOnFloor;
     infoBalls.innerHTML = "Bolas en la plataforma: " + ballsOnFloor;
 }
+
+/**
+ * Función que muestra la carpeta de configuración del juego
+ */
+export function showGameFolder() {
+    gameFolder.show();
+}
+
+/**
+ * Función que esconde la carpeta de configuración del juego
+ */
+export function hideGameFolder() {
+    gameFolder.hide();
+}
+
+
+/**
+ * Función que muestra el botón para terminar el juego
+ */
+export function showEndButton() {
+    endButton.show();
+}
+
+/**
+ * Función que esconde el botón para terminar el juego
+ */
+export function hideEndButton() {
+    endButton.hide();
+}
+
+/**
+ * Función que muestra el selector para colocar cubos
+ */
+export function showPlaceCubesSelector() {
+    placeCubesSelector.show();
+}
+
+/**
+ * Función que esconde el selector para colocar cubos
+ */
+export function hidePlaceCubesSelector() {
+    placeCubesSelector.hide();
+}
+
+/**
+ * Función que actualiza el valor del selector para colocar cubos
+ */
+export function updatePlaceCubesSelector() {
+    placeCubesSelector.updateDisplay();
+}

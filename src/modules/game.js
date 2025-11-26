@@ -1,12 +1,16 @@
 import { 
-    gameFolder, 
-    placeCubesSelector, 
     infoGame, 
     info, 
     cubesOnFloor, 
     ballsOnFloor,
     uiElements, 
-    endButton 
+    hideGameFolder,
+    showGameFolder,
+    hideEndButton,
+    showEndButton,
+    hidePlaceCubesSelector,
+    showPlaceCubesSelector,
+    updatePlaceCubesSelector,
 } from "./gui.js";
 
 // Variables para controlar el juego
@@ -24,8 +28,8 @@ export let nBalls;
  */
 export function startGame() {
     // Se esconden algunos elementos de la interfaz de usuario
-    gameFolder.hide();
-    placeCubesSelector.hide();
+    hideGameFolder();
+    hidePlaceCubesSelector();
 
     // Se indica que se está jugando
     playing = true;
@@ -71,12 +75,12 @@ export function endGame() {
     // Se indica que ya no se está jugando
     playing = false;
     // Se esconde el botón de terminar juego
-    endButton.hide();
+    hideEndButton();
 
     // Se actualizan y muestran los elementos de la UI que estaban ocultos
-    placeCubesSelector.updateDisplay();
-    placeCubesSelector.show();
-    gameFolder.show();
+    updatePlaceCubesSelector();
+    showPlaceCubesSelector();
+    showGameFolder();
 }
 
 /**
@@ -108,7 +112,7 @@ export function checkGame() {
     // Fase final: fin del juego
     else if (gamePhase == 2) {
         // Se muestra el botón de terminar juego
-        endButton.show();
+        showEndButton();
 
         // Si no hay cubos en la plataforma el jugador gana
         if (cubesOnFloor == 0) {
