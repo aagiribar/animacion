@@ -1,8 +1,8 @@
 import * as THREE from "three";
 import { uiElements } from "./gui.js";
 import { camera } from "./simObjects.js";
-import { cubes, balls, createBoxWithPhysics, createRigidBody, ballMaterial } from "./gameObjects.js";
-import { pos, quat, margin } from "./world.js";
+import { cubes, createBoxWithPhysics, createBall } from "./gameObjects.js";
+import { pos, quat } from "./world.js";
 import { playing, nBalls, decrementNBalls } from "./game.js";
 
 // Raycaster
@@ -61,27 +61,7 @@ export function initInput() {
                     // Crea bola como cuerpo rígido y la lanza según coordenadas de ratón
                     const ballMass = 35;
                     const ballRadius = 0.4;
-                    const ball = new THREE.Mesh(
-                        new THREE.SphereGeometry(ballRadius, 14, 10),
-                        ballMaterial
-                    );
-                    ball.castShadow = true;
-                    ball.receiveShadow = true;
-
-                    //Ammo
-                    //Estructura geométrica de colisión esférica
-                    const ballShape = new Ammo.btSphereShape(ballRadius);
-                    ballShape.setMargin(margin);
-                    pos.copy(raycaster.ray.direction);
-                    pos.add(raycaster.ray.origin);
-                    quat.set(0, 0, 0, 1);
-                    const ballBody = createRigidBody(ball, ballShape, ballMass, pos, quat);
-
-                    pos.copy(raycaster.ray.direction);
-                    pos.multiplyScalar(24);
-                    ballBody.setLinearVelocity(new Ammo.btVector3(pos.x, pos.y, pos.z));
-
-                    balls.push(ball);
+                    createBall(ballMass, ballRadius, raycaster.ray.direction, raycaster.ray.origin);
 
                     if (playing) {
                         decrementNBalls();

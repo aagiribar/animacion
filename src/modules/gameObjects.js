@@ -11,7 +11,7 @@ export let balls = [];
 let floor;
 
 // Material para las bolas lanzadas
-export const ballMaterial = new THREE.MeshPhongMaterial({ color: 0x202020 });
+const ballMaterial = new THREE.MeshPhongMaterial({ color: 0x202020 });
 
 // Cargador de texturas
 let textureLoader;
@@ -154,4 +154,35 @@ export function createRigidBody(object, physicsShape, mass, pos, quat, vel, angV
     physicsWorld.addRigidBody(body);
 
     return body;
+}
+
+/**
+ * Función que crea una bola lanzada desde la cámara
+ * @param {Number} mass Masa de la bola
+ * @param {Number} radius Radio de la bola
+ * @param {*} rayDirection Dirección del rayo del raycaster
+ * @param {*} rayOrigin Origin del rayo del raycaster
+ */
+export function createBall(mass, radius, rayDirection, rayOrigin) {
+    const ball = new THREE.Mesh(
+        new THREE.SphereGeometry(radius, 14, 10),
+        ballMaterial
+    );
+    ball.castShadow = true;
+    ball.receiveShadow = true;
+
+    //Ammo
+    //Estructura geométrica de colisión esférica
+    const ballShape = new Ammo.btSphereShape(radius);
+    ballShape.setMargin(margin);
+    pos.copy(rayDirection);
+    pos.add(rayOrigin);
+    quat.set(0, 0, 0, 1);
+    const ballBody = createRigidBody(ball, ballShape, mass, pos, quat);
+
+    pos.copy(rayDirection);
+    pos.multiplyScalar(24);
+    ballBody.setLinearVelocity(new Ammo.btVector3(pos.x, pos.y, pos.z));
+
+    balls.push(ball);
 }
