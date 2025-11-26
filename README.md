@@ -1,6 +1,6 @@
 # Animación de físicas
 ## Agustín Alfonso González Iríbar
-Animación y minijuego de física realizados con _three.js_ y _Ammo_.
+Animación y minijuego de física realizados con __Three.js__ y __Ammo.js__.
 
 ![Imagen de la simulación](assets/readme/sim_completa.png)
 
@@ -36,16 +36,38 @@ npm run start
 
 6. Una vez ejecutado este comando se observará en la consola algo parecido a esto:
 ```
-> animacion-agustin@1.0.0 start
+> animacion-agustin@1.1.0 start
 > node server.js
 
-Your app is listening on port 3000
+Your app is listening on port 1234
+http://localhost:1234
 ```
 
-7. Abrir un navegador y, en la barra de direcciones, escribir ```localhost:3000``` sustituyendo el 3000 por el número indicado anteriormente.
+7. Abrir un navegador y, en la barra de direcciones, escribir ```localhost:1234``` sustituyendo el 3000 por el número indicado anteriormente.
 
 8. Para terminar la simulación, pulsar la combinación de botones ```Ctrl + C``` en la consola donde se realizó el paso 5
 
+## Estructura del proyecto
+
+La estructura de los archivos del código fuente del proyecto, en el directorio ```src``` es la siguiente:
+
+- Directorio ```modules```: Incluye módulos que se encargan de realizar distintas partes de la aplicación:
+    
+    - ```game.js```: Se encarga de la gestión de la lógica de juego.
+
+    - ```gameObjects.js```: Se encarga de la creación de los objetos de la simulación (suelo, cubos y bolas).
+
+    - ```gui.js```: Se encarga de la creación de la interfaz de usuario.
+
+    - ```input.js```: Se encarga de la creación y la lógica de los elementos de interacción de la simulación (raycaster e interacciones al hacer clic).
+
+    - ```simObjects.js```: Se encarga de la creación de los objetos de la simulación (escena, cámara, renderer, control órbital y reloj).
+
+    - ```world.js```: Se encarga de la creación del mundo físico con __Ammo.js__.
+
+- ```animacion.js```: Inicializa __Ammo.js__, inicializa la simulación y controla el bucle de animación.
+
+- ```index.html```: Fichero __HTML__ en el que se muestra la simulación.
 
 ## Controles de la simulación
 ![Controles de la simulación](assets/readme/controles.png)
@@ -54,7 +76,7 @@ La simulación incluye dos ``modos de funcionamiento``:
 1. Un modo que permite colocar cubos y lanzar bolas con total libertad.
 2. Un minijuego consistente en colocar un número determinado de cubos para, posteriormente, tirarlos de la plataforma utilizando un número determinado de bolas.
 
-### Control de botón de colocación disparo
+### Control de botón de colocación o disparo
 
 ![Controles de disparo y colocación de cubos](assets/readme/control_disparo.png)
 
@@ -87,7 +109,7 @@ La simulación incluye un pequeño minijuego consistente en colocar un determina
 
 En la interfaz de usuario se puede seleccionar, en primer lugar, el número de cubos que se deberán colocar al empezar.
 
-Si en la plataforma ya se encontraran un número de cubos superior al número de cubos seleccionado, se jugará con el número de cubos presentes en la plataforma. Por ejemplo, si seleccionan 25 cubos y en la plataforma hubieran 50 cubos, se jugaría con 50 cubos.
+Si en la plataforma ya se encontraran un número de cubos superior al número de cubos seleccionado, se jugará con el número de cubos presentes en la plataforma. Por ejemplo, si se seleccionan 25 cubos y en la plataforma hubieran 50 cubos, se jugaría con 50 cubos.
 
 Una vez seleccionado el número de cubos se procede a seleccionar la dificultad. Dicha dificultad afecta al número de disparos que el jugador puede efectuar.
 
@@ -101,11 +123,11 @@ Una vez se han establecido los parámetros del juego, se pulsa el botón ``Empez
 
 ##### Fase inicial: Colocación de cubos
 
-Si en la plataforma hay menos cubos que los seleccionados por el jugador, entonces este deberá colocar los cubos restantes para pasar a la siguiente fase.
+Si en la plataforma hay menos cubos que los seleccionados por el jugador, entonces deberá colocar los cubos restantes para pasar a la siguiente fase.
 
 ![Contador del juego en la fase inicial](assets/readme/contador_fase_1.png)
 
-Además, se informa en la parte superior de la pantalla cuantos cubos le quedan por colocar.
+Además, se informa en la parte superior de la pantalla cuantos cubos quedan por colocar.
 
 ##### Segunda fase: Lanzamiento de bolas
 
