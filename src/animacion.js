@@ -1,25 +1,11 @@
 import * as THREE from "three";
-import { initGUI, UIelements, gameFolder, placeSelector, endButton } from "/modules/gui.js";
-import { initGraphics, scene, camera, renderer, textureLoader, clock } from "/modules/simObjects.js"
+import { initGUI, UIelements, gameFolder, placeSelector, endButton } from "./modules/gui.js";
+import { initGraphics, scene, camera, renderer, textureLoader, clock } from "./modules/simObjects.js";
+import { initPhysics, pos, quat, margin, physicsWorld, updatePhysics } from "./modules/world.js";
 
-// Mundo físico con Ammo
-let physicsWorld;
-const gravityConstant = 7.8;
-let collisionConfiguration;
-let dispatcher;
-let broadphase;
-let solver;
-const margin = 0.05
-
-const pos = new THREE.Vector3();
-const quat = new THREE.Quaternion();
-
-//Variables temporales para actualizar transformación en el bucle
-let transformAux1;
-let tempBtVec3_1;
 
 // Variables para almacenar los objetos de la simulación
-let rigidBodies = [];
+export let rigidBodies = [];
 let cubes = [];
 let balls = [];
 
@@ -70,30 +56,6 @@ function init() {
     initInfo();
     // Interfaz de usuario
     initGUI();
-}
-
-// Función que inicializa las físicas de la simulación
-function initPhysics() {
-    // Colisiones
-    collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
-    // Gestor de colisiones convexas y cóncavas
-    dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration);
-    // Colisión fase amplia
-    broadphase = new Ammo.btDbvtBroadphase();
-    // Resuelve resricciones de reglas físicas como fuerzas, gravedad, etc.
-    solver = new Ammo.btSequentialImpulseConstraintSolver();
-    // Crea en mundo físico
-    physicsWorld = new Ammo.btDiscreteDynamicsWorld(
-        dispatcher,
-        broadphase,
-        solver,
-        collisionConfiguration
-    );
-    // Establece gravedad
-    physicsWorld.setGravity(new Ammo.btVector3(0, -gravityConstant, 0));
-
-    transformAux1 = new Ammo.btTransform();
-    tempBtVec3_1 = new Ammo.btVector3(0, 0, 0);
 }
 
 // Función que crea los objetos iniciales de la simulación
@@ -478,28 +440,3 @@ function animationLoop() {
     // Se renderiza la escana
     renderer.render(scene, camera);
 }
-
-// Función que actualiza las físicas de la simulación
-// deltaTime: Diferencia de tiempo con respecto a la actualización anterior
-function updatePhysics(deltaTime) {
-    // Avanza la simulación en función del tiempo
-    physicsWorld.stepSimulation(deltaTime, 10);
-  
-    // Actualiza cuerpos rígidos
-    for (let i = 0, il = rigidBodies.length; i < il; i++) {
-      const objThree = rigidBodies[i];
-      const objPhys = objThree.userData.physicsBody;
-      //Obtiene posición y rotación
-      const ms = objPhys.getMotionState();
-      //Actualiza la correspondiente primitiva gráfica asociada
-      if (ms) {
-        ms.getWorldTransform(transformAux1);
-        const p = transformAux1.getOrigin();
-        const q = transformAux1.getRotation();
-        objThree.position.set(p.x(), p.y(), p.z());
-        objThree.quaternion.set(q.x(), q.y(), q.z(), q.w());
-  
-        objThree.userData.collided = false;
-      }
-    }
-  }
