@@ -1,5 +1,5 @@
 import { GUI } from "lil-gui";
-import { startGame, endGame } from "../animacion.js";
+import { startGame, endGame } from "./game.js";
 import { cubes, balls } from "./gameObjects.js";
 
 // Elementos de la interfaz de usuario

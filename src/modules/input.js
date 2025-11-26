@@ -3,7 +3,7 @@ import { UIelements } from "./gui.js";
 import { camera } from "./simObjects.js";
 import { cubes, createBoxWithPhysics, ballMaterial, createRigidBody, balls } from "./gameObjects.js";
 import { pos, quat, margin } from "./world.js";
-import { playing, nBalls, decrementNBalls } from "../animacion.js";
+import { playing, nBalls, decrementNBalls } from "./game.js";
 
 // Raycaster
 const mouseCoords = new THREE.Vector2()
