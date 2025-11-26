@@ -164,3 +164,11 @@ export function hidePlaceCubesSelector() {
 export function updatePlaceCubesSelector() {
     placeCubesSelector.updateDisplay();
 }
+
+/**
+ * Función que añade un elementos al elemento info
+ * @param {*} element Elemento a añadir
+ */
+export function appendToInfo(element) {
+    info.appendChild(element);
+}

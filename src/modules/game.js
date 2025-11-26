@@ -1,6 +1,5 @@
 import { 
-    infoGame, 
-    info, 
+    infoGame,
     cubesOnFloor, 
     ballsOnFloor,
     uiElements, 
@@ -11,6 +10,7 @@ import {
     hidePlaceCubesSelector,
     showPlaceCubesSelector,
     updatePlaceCubesSelector,
+    appendToInfo,
 } from "./gui.js";
 
 // Variables para controlar el juego
@@ -65,7 +65,7 @@ export function startGame() {
             break;
     };
 
-    info.appendChild(infoGame);
+    appendToInfo(infoGame);
 }
 
 /**
