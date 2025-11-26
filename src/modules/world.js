@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { rigidBodies } from "../animacion.js"
+import { rigidBodies } from "./gameObjects.js";
 
 // Mundo físico con Ammo
 export let physicsWorld;
