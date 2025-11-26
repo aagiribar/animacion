@@ -1,5 +1,5 @@
 import { GUI } from "lil-gui";
-import { startGame, endGame } from "/animacion.js";
+import { startGame, endGame, cubes, balls } from "../animacion.js";
 
 // Elementos de la interfaz de usuario
 const gui = new GUI();
@@ -7,6 +7,15 @@ export let UIelements;
 export let gameFolder;
 export let placeSelector;
 export let endButton;
+
+// Variables para contar cuantos elementos hay en la plataforma
+export let cubesOnFloor = 0;
+export let ballsOnFloor = 0;
+
+// Elementos de inforación en pantalla
+export let info;
+let infoCubes, infoBalls;
+export let infoGame;
 
 // Función que inicializa los elementos de la interfaz de usuario
 export function initGUI() {
@@ -38,4 +47,61 @@ export function initGUI() {
     gameFolder.add(UIelements, "Dificultad", ["Fácil", "Normal", "Dificil"]);
     // Botón para empezar el juego
     gameFolder.add(UIelements, "Empezar juego");
+}
+
+// Función para inicializar los elementos de información en pantalla
+export function initInfo() {
+    info = document.createElement('div');
+    info.style.position = 'absolute';
+    info.style.top = '30px';
+    info.style.width = '100%';
+    info.style.textAlign = 'center';
+    info.style.color = '#000';
+    info.style.fontWeight = 'bold';
+    info.style.backgroundColor = 'transparent';
+    info.style.zIndex = '1';
+    info.style.fontFamily = 'Monospace';
+    document.body.appendChild(info);
+
+    infoCubes = document.createElement("div");
+    infoCubes.innerHTML = "Cubos en la plataforma: " + cubesOnFloor;
+    info.appendChild(infoCubes);
+
+    infoBalls = document.createElement("div");
+    infoBalls.innerHTML = "Bolas en la plataforma: " + ballsOnFloor;
+    info.appendChild(infoBalls);
+
+    infoGame = document.createElement("div");
+}
+
+// Función que actualiza los contadores de objetos sobre la plataforma
+export function updateObjectsOnFloor() {
+    // Actualización del contador de cubos
+    cubesOnFloor = 0;
+    for (let i = 1; i < cubes.length; i++) {
+        const cubo = cubes[i];
+        
+        if(cubo.position.y > -1) {
+            cubesOnFloor++;
+        }
+    }
+
+    // Actualización del contador de bolas
+    ballsOnFloor = 0;
+    for(let i = 0; i < balls.length; i++) {
+        const bola = balls[i];
+
+        if(bola.position.y > -1) {
+            ballsOnFloor++;
+        }
+    }
+    
+    // Se actualiza la información en pantalla
+    updateInfo();
+}
+
+// Función que actualiza los elementos de información en pantalla relativos a los objetos situados sobre la plataforma
+function updateInfo() {
+    infoCubes.innerHTML = "Cubos en la plataforma: " + cubesOnFloor;
+    infoBalls.innerHTML = "Bolas en la plataforma: " + ballsOnFloor;
 }

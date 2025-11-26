@@ -1,17 +1,12 @@
 import * as THREE from "three";
-import { initGUI, UIelements, gameFolder, placeSelector, endButton } from "./modules/gui.js";
+import { initGUI, UIelements, gameFolder, placeSelector, endButton, initInfo, updateObjectsOnFloor, infoGame, cubesOnFloor, ballsOnFloor, info } from "./modules/gui.js";
 import { initGraphics, scene, camera, renderer, textureLoader, clock } from "./modules/simObjects.js";
 import { initPhysics, pos, quat, margin, physicsWorld, updatePhysics } from "./modules/world.js";
 
-
 // Variables para almacenar los objetos de la simulación
 export let rigidBodies = [];
-let cubes = [];
-let balls = [];
-
-// Variables para contar cuantos elementos hay en la plataforma
-let cubesOnFloor = 0;
-let ballsOnFloor = 0;
+export let cubes = [];
+export let balls = [];
 
 // Variable para almacenar el objeto que representa al suelo
 let floor;
@@ -30,11 +25,6 @@ Ammo().then(function (AmmoLib) {
     init();
     animationLoop();
 });
-
-// Elementos de inforación en pantalla
-let info;
-let infoCubes, infoBalls;
-let infoGame;
 
 // Variables para controlar el juego
 let playing = false;
@@ -171,31 +161,6 @@ function initInput() {
     });
 }
 
-// Función para inicializar los elementos de información en pantalla
-function initInfo() {
-    info = document.createElement('div');
-    info.style.position = 'absolute';
-    info.style.top = '30px';
-    info.style.width = '100%';
-    info.style.textAlign = 'center';
-    info.style.color = '#000';
-    info.style.fontWeight = 'bold';
-    info.style.backgroundColor = 'transparent';
-    info.style.zIndex = '1';
-    info.style.fontFamily = 'Monospace';
-    document.body.appendChild(info);
-
-    infoCubes = document.createElement("div");
-    infoCubes.innerHTML = "Cubos en la plataforma: " + cubesOnFloor;
-    info.appendChild(infoCubes);
-
-    infoBalls = document.createElement("div");
-    infoBalls.innerHTML = "Bolas en la plataforma: " + ballsOnFloor;
-    info.appendChild(infoBalls);
-
-    infoGame = document.createElement("div");
-}
-
 // Función para crear un cubo con físicas
 // sx, sy, sz: Dimensiones del cubo
 // mass: Masa del cubo
@@ -290,38 +255,6 @@ function createRigidBody(object, physicsShape, mass, pos, quat, vel, angVel) {
     physicsWorld.addRigidBody(body);
 
     return body;
-}
-
-// Función que actualiza los contadores de objetos sobre la plataforma
-function updateObjectsOnFloor() {
-    // Actualización del contador de cubos
-    cubesOnFloor = 0;
-    for (let i = 1; i < cubes.length; i++) {
-        const cubo = cubes[i];
-        
-        if(cubo.position.y > -1) {
-            cubesOnFloor++;
-        }
-    }
-
-    // Actualización del contador de bolas
-    ballsOnFloor = 0;
-    for(let i = 0; i < balls.length; i++) {
-        const bola = balls[i];
-
-        if(bola.position.y > -1) {
-            ballsOnFloor++;
-        }
-    }
-    
-    // Se actualiza la información en pantalla
-    updateInfo();
-}
-
-// Función que actualiza los elementos de información en pantalla relativos a los objetos situados sobre la plataforma
-function updateInfo() {
-    infoCubes.innerHTML = "Cubos en la plataforma: " + cubesOnFloor;
-    infoBalls.innerHTML = "Bolas en la plataforma: " + ballsOnFloor;
 }
 
 // Función que inicializa el juego
