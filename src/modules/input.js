@@ -16,7 +16,7 @@ export function initInput() {
     // EventListener para gestionar las pulsaciones con el ratón
     document.addEventListener("mousedown", function (event) {
         // Se dispara según el modo de disparo seleccioando
-        if ((event.button == 2 && !uiElements["Disparo con botón izquierdo"] || uiElements["Disparo con botón izquierdo"])) {
+        if (event.button == 2) {
             //Coordenadas del puntero
             mouseCoords.set(
                 (event.clientX / window.innerWidth) * 2 - 1,

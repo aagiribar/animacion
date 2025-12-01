@@ -24,7 +24,6 @@ export let infoGame;
 export function initGUI() {
     // Objeto que almacena los elementos de la interfaz de usuario
     uiElements = {
-        "Disparo con botón izquierdo": false,
         "Colocar cubos": true,
         "Número de cubos": 10,
         "Dificultad": "Fácil",
@@ -34,9 +33,6 @@ export function initGUI() {
 
     // Selector para seleccionar si se colocan cubos o se lanzan bolas
     placeCubesSelector = gui.add(uiElements, "Colocar cubos", true);
-
-    // Selector para seleccioanar si se puede disparar/colocar cubos con el botón izquierdo del ratón
-    gui.add(uiElements, "Disparo con botón izquierdo", false);
 
     // Botón para terminar el juego
     endButton = gui.add(uiElements, "Terminar juego");

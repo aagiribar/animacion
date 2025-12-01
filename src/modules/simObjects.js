@@ -5,7 +5,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 export let scene, camera, renderer;
 
 // Controles de la cámara
-let controls;
+export let controls;
 
 // Reloj para medir el tiempo entre frames
 export const clock = new THREE.Clock();
@@ -38,6 +38,10 @@ export function initGraphics() {
     controls = new OrbitControls(camera, renderer.domElement);
     controls.target.set(0, 2, 0);
     controls.update();
+
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.20;
+    controls.enablePan = false;
 
     //Luces
     const ambientLight = new THREE.AmbientLight(0x707070);
