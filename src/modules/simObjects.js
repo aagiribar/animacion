@@ -1,11 +1,12 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { FirstPersonCamera } from "./classes/FirstPersonCamera.js";
 
 // Elementos de la simulación
-export let scene, camera, renderer;
+export let scene, orbitalCamera, firstPersonCamera, renderer;
 
 // Controles de la cámara
-export let controls;
+export let orbitControls, firstPersonControls;
 
 // Reloj para medir el tiempo entre frames
 export const clock = new THREE.Clock();
@@ -17,8 +18,8 @@ export function initGraphics() {
     // Creación de la escena
     scene = new THREE.Scene();
 
-    // Creación de la cámara
-    camera = new THREE.PerspectiveCamera(
+    // Creación de la cámara órbital
+    orbitalCamera = new THREE.PerspectiveCamera(
         75,
         window.innerWidth / window.innerHeight,
         0.1,
@@ -26,7 +27,17 @@ export function initGraphics() {
     );
 
     scene.background = new THREE.Color(0xbfd1e5);
-    camera.position.set(-14, 8, 16);
+    orbitalCamera.position.set(-14, 8, 16);
+
+    // Creación de la cámara en primera persona
+    firstPersonCamera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+    );
+
+    firstPersonCamera.position.set(0, 2, 0);
 
     // Creación del renderer
     renderer = new THREE.WebGLRenderer();
@@ -35,13 +46,16 @@ export function initGraphics() {
     document.body.appendChild(renderer.domElement);
 
     // Creación de controles de tipo orbital
-    controls = new OrbitControls(camera, renderer.domElement);
-    controls.target.set(0, 2, 0);
-    controls.update();
+    orbitControls = new OrbitControls(orbitalCamera, renderer.domElement);
+    orbitControls.target.set(0, 5, 0);
+    orbitControls.update();
 
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.20;
-    controls.enablePan = false;
+    orbitControls.enableDamping = true;
+    orbitControls.dampingFactor = 0.20;
+    orbitControls.enablePan = false;
+
+    // Creación de controles de tipo primera persona
+    firstPersonControls = new FirstPersonCamera(firstPersonCamera);
 
     //Luces
     const ambientLight = new THREE.AmbientLight(0x707070);
@@ -73,8 +87,8 @@ export function initGraphics() {
  */
 function onWindowResize() {
     // Se modifica la relación de aspecto de la camara
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
+    orbitalCamera.aspect = window.innerWidth / window.innerHeight;
+    orbitalCamera.updateProjectionMatrix();
 
     // Se actualiza el tamaño del render
     renderer.setSize(window.innerWidth, window.innerHeight);

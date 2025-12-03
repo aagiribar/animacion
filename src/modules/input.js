@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { uiElements } from "./gui.js";
-import { camera } from "./simObjects.js";
+import { orbitalCamera } from "./simObjects.js";
 import { cubes, createBoxWithPhysics, createBall } from "./gameObjects.js";
 import { pos, quat } from "./world.js";
 import { playing, nBalls, decrementNBalls } from "./game.js";
@@ -24,7 +24,7 @@ export function initInput() {
             );
 
             // Intersección, define rayo
-            raycaster.setFromCamera(mouseCoords, camera);
+            raycaster.setFromCamera(mouseCoords, orbitalCamera);
 
             // Se detectan las intersecciones con el rayo
             const intersections = raycaster.intersectObjects(cubes);

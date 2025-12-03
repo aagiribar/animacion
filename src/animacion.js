@@ -1,5 +1,14 @@
 import { initGUI, initInfo, updateObjectsOnFloor } from "./modules/gui.js";
-import { initGraphics, scene, camera, renderer, clock, controls } from "./modules/simObjects.js";
+import { 
+    initGraphics, 
+    scene, 
+    orbitalCamera, 
+    renderer, 
+    clock, 
+    orbitControls, 
+    firstPersonCamera, 
+    firstPersonControls 
+} from "./modules/simObjects.js";
 import { initPhysics, updatePhysics } from "./modules/world.js";
 import { createObjects } from "./modules/gameObjects.js";
 import { initInput } from "./modules/input.js";
@@ -53,8 +62,11 @@ function animationLoop() {
     }
 
     // Actualiza el control orbital
-    controls.update();
+    orbitControls.update();
+
+    // Actualiza el control de primera persona
+    //firstPersonControls.update(deltaTime);
 
     // Se renderiza la escana
-    renderer.render(scene, camera);
+    renderer.render(scene, orbitalCamera);
 }
