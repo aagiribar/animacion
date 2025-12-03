@@ -50,7 +50,7 @@ export class InputController {
         this.current_.mouseY = e.pageY - window.innerHeight / 2;
 
         if (this.previous_ === null) {
-            this.previous_ = {...this.current_};
+            this.previous_ = { ...this.current_ };
         }
 
         this.current_.mouseXDelta = this.current_.mouseX - this.previous_.mouseX;
@@ -65,7 +65,11 @@ export class InputController {
         this.keys_[e.keyCode] = false;
     }
 
+    key(keyCode) {
+        return !!this.keys_[keyCode];
+    }
+
     update() {
-        this.previous_ = {...this.current_};
+        this.previous_ = { ...this.current_ };
     }
 }
