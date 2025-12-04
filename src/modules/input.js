@@ -18,6 +18,17 @@ let leftButtonPressed = false;
 let rightButtonPressed = false;
 
 /**
+ * Función que habilita el bloqueo del ratón en la cámara en primera persona
+ */
+export function enableMousePointerBlock() {
+    document.querySelector("canvas").addEventListener("click", async () => {
+        if (!uiElements["Colocar cubos"]) {
+            await document.body.requestPointerLock();
+        }
+    });
+}
+
+/**
  * Función que comprueba el estado de los controles de la simulación
  */
 export function checkInput() {
@@ -74,7 +85,10 @@ export function checkInput() {
         if (currentInput.leftButton && !leftButtonPressed) {
             leftButtonPressed = true;
 
-            if (!playing || nBalls > 0) {
+            if ((!playing || nBalls > 0) && document.pointerLockElement) {
+                // Coordenadas del puntero
+                mouseCoords.set(0, 0);
+
                 // Intersección, define rayo
                 raycaster.setFromCamera(mouseCoords, firstPersonCamera);
 

@@ -48,9 +48,6 @@ export class InputController {
     }
 
     onMouseMove_(e) {
-        this.current_.mouseX = e.pageX - window.innerWidth / 2;
-        this.current_.mouseY = e.pageY - window.innerHeight / 2;
-
         this.current_.clientX = e.clientX;
         this.current_.clientY = e.clientY;
 
@@ -58,8 +55,8 @@ export class InputController {
             this.previous_ = { ...this.current_ };
         }
 
-        this.current_.mouseXDelta = this.current_.mouseX - this.previous_.mouseX;
-        this.current_.mouseYDelta = this.current_.mouseY - this.previous_.mouseY;
+        this.current_.mouseXDelta = e.movementX || 0;
+        this.current_.mouseYDelta = e.movementY || 0;
     }
 
     onKeyDown_(e) {
@@ -76,8 +73,8 @@ export class InputController {
 
     update() {
         if (this.previous_) {
-            this.current_.mouseXDelta = this.current_.mouseX - this.previous_.mouseX;
-            this.current_.mouseYDelta = this.current_.mouseY - this.previous_.mouseY;
+            this.current_.mouseXDelta = 0;
+            this.current_.mouseYDelta = 0;
         }
 
         this.previous_ = { ...this.current_ };

@@ -11,7 +11,7 @@ import {
 } from "./modules/simObjects.js";
 import { initPhysics, updatePhysics } from "./modules/world.js";
 import { createObjects } from "./modules/gameObjects.js";
-import { checkInput } from "./modules/input.js";
+import { checkInput, enableMousePointerBlock } from "./modules/input.js";
 import { playing, checkGame } from "./modules/game.js";
 
 //Inicialización ammo
@@ -37,6 +37,8 @@ function init() {
     initInfo();
     // Interfaz de usuario
     initGUI();
+    // Se habilita el bloqueo del ratón en el modo en primera persona
+    enableMousePointerBlock();
 }
 
 /**

@@ -15,9 +15,9 @@ export class FirstPersonCamera {
         this.rotation_ = new THREE.Quaternion();
         this.translation_ = new THREE.Vector3(0, 2, 40);
         this.phi_ = 0;
-        this.phiSpeed_ = 5;
+        this.phiSpeed_ = 15;
         this.theta_ = 0;
-        this.thetaSpeed_ = 8;
+        this.thetaSpeed_ = 18;
         this.xLimits_ = [[-45, -35], [35, 45]];
         this.zLimits_ = [[-45, -35], [35, 45]];
     }
@@ -35,22 +35,24 @@ export class FirstPersonCamera {
     }
 
     updateRotation_() {
-        const xh = this.input_.current_.mouseXDelta / window.innerWidth;
-        const yh = this.input_.current_.mouseYDelta / window.innerHeight;
+        if (document.pointerLockElement) {
+            const xh = this.input_.current_.mouseXDelta / window.innerWidth;
+            const yh = this.input_.current_.mouseYDelta / window.innerHeight;
 
-        this.phi_ += -xh * this.phiSpeed_;
-        this.theta_ = clamp(this.theta_ + -yh * this.thetaSpeed_, -Math.PI / 3, Math.PI / 3);
+            this.phi_ += -xh * this.phiSpeed_;
+            this.theta_ = clamp(this.theta_ + -yh * this.thetaSpeed_, -Math.PI / 3, Math.PI / 3);
 
-        const qx = new THREE.Quaternion();
-        qx.setFromAxisAngle(new THREE.Vector3(0, 1, 0), this.phi_);
-        const qz = new THREE.Quaternion();
-        qz.setFromAxisAngle(new THREE.Vector3(1, 0, 0), this.theta_);
+            const qx = new THREE.Quaternion();
+            qx.setFromAxisAngle(new THREE.Vector3(0, 1, 0), this.phi_);
+            const qz = new THREE.Quaternion();
+            qz.setFromAxisAngle(new THREE.Vector3(1, 0, 0), this.theta_);
 
-        const q = new THREE.Quaternion();
-        q.multiply(qx);
-        q.multiply(qz);
+            const q = new THREE.Quaternion();
+            q.multiply(qx);
+            q.multiply(qz);
 
-        this.rotation_.copy(q);
+            this.rotation_.copy(q);
+        }
     }
 
     updateTranslation_(timeElapsed) {
@@ -73,7 +75,7 @@ export class FirstPersonCamera {
 
         this.translation_.add(forward);
         this.translation_.add(left);
-        
+
         if (!this.checkPointInPlatform_(this.translation_.x, this.translation_.z)) {
             this.translation_.copy(actualTranslation);
         }
