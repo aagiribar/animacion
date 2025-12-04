@@ -1,4 +1,4 @@
-import { initGUI, initInfo, updateObjectsOnFloor } from "./modules/gui.js";
+import { initGUI, initInfo, uiElements, updateObjectsOnFloor } from "./modules/gui.js";
 import { 
     initGraphics, 
     scene, 
@@ -61,12 +61,19 @@ function animationLoop() {
         checkGame();
     }
 
-    // Actualiza el control orbital
-    orbitControls.update();
+    // Se renderiza la escena con la cámara que corresponda
+    if (uiElements["Colocar cubos"]) {
+        // Actualiza el control orbital
+        orbitControls.update();
 
-    // Actualiza el control de primera persona
-    //firstPersonControls.update(deltaTime);
+        // Se renderiza la escena con la cámara órbital
+        renderer.render(scene, orbitalCamera);
+    }
+    else {
+        // Actualiza el control de primera persona
+        firstPersonControls.update(deltaTime);
 
-    // Se renderiza la escana
-    renderer.render(scene, orbitalCamera);
+        // Se renderiza la escena con la cámara en primera personal
+        renderer.render(scene, firstPersonCamera);
+    }
 }
