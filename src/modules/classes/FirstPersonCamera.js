@@ -1,4 +1,4 @@
-import { InputController } from "./InputController.js";
+import { inputController } from "../input.js";
 import * as THREE from "three";
 
 const KEYS = {
@@ -11,7 +11,7 @@ const KEYS = {
 export class FirstPersonCamera {
     constructor(camera) {
         this.camera_ = camera;
-        this.input_ = new InputController();
+        this.input_ = inputController;
         this.rotation_ = new THREE.Quaternion();
         this.translation_ = new THREE.Vector3(0, 2, 40);
         this.phi_ = 0;

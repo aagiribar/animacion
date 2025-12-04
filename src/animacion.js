@@ -11,7 +11,7 @@ import {
 } from "./modules/simObjects.js";
 import { initPhysics, updatePhysics } from "./modules/world.js";
 import { createObjects } from "./modules/gameObjects.js";
-import { initInput } from "./modules/input.js";
+import { checkInput } from "./modules/input.js";
 import { playing, checkGame } from "./modules/game.js";
 
 //Inicialización ammo
@@ -33,8 +33,6 @@ function init() {
     initPhysics();
     // Objetos
     createObjects();
-    // Interacción
-    initInput();
     // Información en pantalla
     initInfo();
     // Interfaz de usuario
@@ -60,6 +58,9 @@ function animationLoop() {
     if(playing) {
         checkGame();
     }
+
+    // Se comprueba el estado de los controles
+    checkInput();
 
     // Se renderiza la escena con la cámara que corresponda
     if (uiElements["Colocar cubos"]) {
