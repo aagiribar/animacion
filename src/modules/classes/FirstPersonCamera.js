@@ -96,6 +96,14 @@ export class FirstPersonCamera {
 
         return false;
     }
+
+    setHorizontalSensitivity(newValue) {
+        this.phiSpeed_ = newValue;
+    }
+
+    setVerticalSensitivity(newValue) {
+        this.thetaSpeed_ = newValue;
+    }
 }
 
 function clamp(x, a, b) {

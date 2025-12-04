@@ -11,6 +11,8 @@ import {
     showPlaceCubesSelector,
     updatePlaceCubesSelector,
     appendToInfo,
+    hideMouseFolder,
+    showMouseFolder,
 } from "./gui.js";
 
 // Variables para controlar el juego
@@ -30,6 +32,7 @@ export function startGame() {
     // Se esconden algunos elementos de la interfaz de usuario
     hideGameFolder();
     hidePlaceCubesSelector();
+    hideMouseFolder();
 
     // Se indica que se está jugando
     playing = true;
@@ -81,6 +84,7 @@ export function endGame() {
     updatePlaceCubesSelector();
     showPlaceCubesSelector();
     showGameFolder();
+    showMouseFolder();
 }
 
 /**

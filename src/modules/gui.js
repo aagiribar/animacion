@@ -1,13 +1,15 @@
 import { GUI } from "lil-gui";
 import { startGame, endGame } from "./game.js";
 import { cubes, balls } from "./gameObjects.js";
+import { firstPersonControls } from "./simObjects.js";
 
 // Elementos de la interfaz de usuario
 const gui = new GUI();
 export let uiElements;
-export let gameFolder;
-export let placeCubesSelector;
-export let endButton;
+let gameFolder;
+let placeCubesSelector;
+let endButton;
+let mouseFolder;
 
 // Variables para contar cuantos elementos hay en la plataforma
 export let cubesOnFloor = 0;
@@ -28,7 +30,9 @@ export function initGUI() {
         "Número de cubos": 10,
         "Dificultad": "Fácil",
         "Empezar juego": startGame,
-        "Terminar juego": endGame
+        "Terminar juego": endGame,
+        "Sensibilidad horizontal": 15,
+        "Sensibilidad vertical": 18
     }
 
     // Selector para seleccionar si se colocan cubos o se lanzan bolas
@@ -40,12 +44,24 @@ export function initGUI() {
 
     // Carpeta que contiene elementos de la UI para configurar el juego
     gameFolder = gui.addFolder("Juego");
+
     // Selector numérico para seleccionar el número de cubos que se deben colocar
     gameFolder.add(uiElements, "Número de cubos", 10, 30, 1);
     // Selector de dificultad del juego
     gameFolder.add(uiElements, "Dificultad", ["Fácil", "Normal", "Dificil"]);
     // Botón para empezar el juego
     gameFolder.add(uiElements, "Empezar juego");
+
+    // Carpeta que contiene selectores para cambiar la sensibilidad del ratón
+    mouseFolder = gui.addFolder("Ratón");
+
+    // Selectores de sensibilidad del ratón
+    mouseFolder.add(uiElements, "Sensibilidad horizontal", 10, 25, 1).onChange((value) => {
+        firstPersonControls.setHorizontalSensitivity(value);
+    });
+    mouseFolder.add(uiElements, "Sensibilidad vertical", 10, 25, 1).onChange((value) => {
+        firstPersonControls.setVerticalSensitivity(value);
+    });
 }
 
 /**
@@ -159,6 +175,20 @@ export function hidePlaceCubesSelector() {
  */
 export function updatePlaceCubesSelector() {
     placeCubesSelector.updateDisplay();
+}
+
+/**
+ * Función que muestra la carpeta de selección de sensibilidad del ratón
+ */
+export function showMouseFolder() {
+    mouseFolder.show();
+}
+
+/**
+ * Función que esconde la carpeta de selección de sensibilidad del ratón
+ */
+export function hideMouseFolder() {
+    mouseFolder.hide();
 }
 
 /**
