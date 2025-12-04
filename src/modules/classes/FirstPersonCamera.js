@@ -13,11 +13,13 @@ export class FirstPersonCamera {
         this.camera_ = camera;
         this.input_ = new InputController();
         this.rotation_ = new THREE.Quaternion();
-        this.translation_ = new THREE.Vector3(0, 2, 0);
+        this.translation_ = new THREE.Vector3(0, 2, 40);
         this.phi_ = 0;
         this.phiSpeed_ = 5;
         this.theta_ = 0;
         this.thetaSpeed_ = 8;
+        this.xLimits_ = [[-45, -35], [35, 45]];
+        this.zLimits_ = [[-45, -35], [35, 45]];
     }
 
     update(timeElapsed) {
@@ -52,6 +54,9 @@ export class FirstPersonCamera {
     }
 
     updateTranslation_(timeElapsed) {
+        const actualTranslation = new THREE.Vector3();
+        actualTranslation.copy(this.translation_);
+
         const forwardVelocity = (this.input_.key(KEYS.w) ? 1 : 0) + (this.input_.key(KEYS.s) ? -1 : 0);
         const strafeVelocity = (this.input_.key(KEYS.a) ? 1 : 0) + (this.input_.key(KEYS.d) ? -1 : 0);
 
@@ -68,6 +73,26 @@ export class FirstPersonCamera {
 
         this.translation_.add(forward);
         this.translation_.add(left);
+        
+        if (!this.checkPointInPlatform_(this.translation_.x, this.translation_.z)) {
+            this.translation_.copy(actualTranslation);
+        }
+    }
+
+    checkPointInPlatform_(x, z) {
+        if (x >= this.xLimits_[0][0] && x <= this.xLimits_[0][1] || x >= this.xLimits_[1][0] && x <= this.xLimits_[1][1]) {
+            if (z >= this.zLimits_[0][0] && z <= this.zLimits_[1][1]) {
+                return true;
+            }
+        }
+
+        if (z >= this.zLimits_[0][0] && z <= this.zLimits_[0][1] || z >= this.zLimits_[1][0] && z <= this.zLimits_[1][1]) {
+            if (x > this.xLimits_[0][1] && x < this.xLimits_[1][0]) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
 
