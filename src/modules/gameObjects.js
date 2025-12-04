@@ -193,7 +193,13 @@ export function createBall(mass, radius, rayDirection, rayOrigin) {
     balls.push(ball);
 }
 
+/**
+ * Función que crea el suelo donde se encuentra el jugador
+ * El suelo está formado por cuatro plataformas que forman un cuadrado
+ * alrededor de la plataforma principal
+ */
 function createPlayerFloor() {
+    // Posiciones de las cuatro plataformas
     const positions = [
         new THREE.Vector3(0, -0.5, -40),
         new THREE.Vector3(0, -0.5, 40),
@@ -205,8 +211,10 @@ function createPlayerFloor() {
         quat.set(0, 0, 0, 1);
         pos.set(position.x, position.y, position.z);
 
+        // Dimensión en X de la plataforma
         let sx = 90;
 
+        // Si la plataforma es lateral, se rota 90 grados y se ajusta la dimensión en X para que encaje
         if (position.x !== 0) {
             const qx = new THREE.Quaternion();
             qx.setFromAxisAngle(new THREE.Vector3(0, 1, 0), 90 * (Math.PI / 180));
@@ -214,6 +222,7 @@ function createPlayerFloor() {
             sx = 70;
         }
 
+        // Creación de la plataforma
         const platformPiece = createBoxWithPhysics(
             sx,
             1,
@@ -231,7 +240,7 @@ function createPlayerFloor() {
             function (texture) {
                 texture.wrapS = THREE.RepeatWrapping;
                 texture.wrapT = THREE.RepeatWrapping;
-                texture.repeat.set(40, 40);
+                texture.repeat.set(sx, 10);
                 platformPiece.material.map = texture;
                 platformPiece.material.needsUpdate = true;
             }
