@@ -70,6 +70,11 @@ export class InputController {
     }
 
     update() {
+        if (this.previous_) {
+            this.current_.mouseXDelta = this.current_.mouseX - this.previous_.mouseX;
+            this.current_.mouseYDelta = this.current_.mouseY - this.previous_.mouseY;
+        }
+
         this.previous_ = { ...this.current_ };
     }
 }
