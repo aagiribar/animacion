@@ -8,7 +8,10 @@ export let cubes = [];
 export let balls = [];
 
 // Variable para almacenar el objeto que representa al suelo
-let floor;
+let cubesFloor;
+
+// Array que almacena los objetos que representan al suelo donde se encuentra el jugador
+let playerFloor = [];
 
 // Material para las bolas lanzadas
 const ballMaterial = new THREE.MeshPhongMaterial({ color: 0x202020 });
@@ -25,7 +28,7 @@ export function createObjects() {
     quat.set(0, 0, 0, 1);
 
     // Creación del suelo
-    floor = createBoxWithPhysics(
+    cubesFloor = createBoxWithPhysics(
         40,
         1,
         40,
@@ -34,7 +37,7 @@ export function createObjects() {
         quat,
         new THREE.MeshPhongMaterial({ color: 0xffffff })
     );
-    floor.receiveShadow = true;
+    cubesFloor.receiveShadow = true;
 
     // TextureLoader para cargar texturas
     textureLoader = new THREE.TextureLoader();
@@ -46,11 +49,14 @@ export function createObjects() {
             texture.wrapS = THREE.RepeatWrapping;
             texture.wrapT = THREE.RepeatWrapping;
             texture.repeat.set(40, 40);
-            floor.material.map = texture;
-            floor.material.needsUpdate = true;
+            cubesFloor.material.map = texture;
+            cubesFloor.material.needsUpdate = true;
         }
     );
-    cubes.push(floor);
+    cubes.push(cubesFloor);
+
+    // Creación del suelo donde se encuentra el jugador
+    createPlayerFloor();
 }
 
 /**
@@ -185,4 +191,52 @@ export function createBall(mass, radius, rayDirection, rayOrigin) {
     ballBody.setLinearVelocity(new Ammo.btVector3(pos.x, pos.y, pos.z));
 
     balls.push(ball);
+}
+
+function createPlayerFloor() {
+    const positions = [
+        new THREE.Vector3(0, -0.5, -40),
+        new THREE.Vector3(0, -0.5, 40),
+        new THREE.Vector3(-40, -0.5, 0),
+        new THREE.Vector3(40, -0.5, 0)
+    ]
+
+    for (const position of positions) {
+        quat.set(0, 0, 0, 1);
+        pos.set(position.x, position.y, position.z);
+
+        let sx = 90;
+
+        if (position.x !== 0) {
+            const qx = new THREE.Quaternion();
+            qx.setFromAxisAngle(new THREE.Vector3(0, 1, 0), 90 * (Math.PI / 180));
+            quat.multiply(qx);
+            sx = 70;
+        }
+
+        const platformPiece = createBoxWithPhysics(
+            sx,
+            1,
+            10,
+            0,
+            pos,
+            quat,
+            new THREE.MeshPhongMaterial({ color: 0xffffff })
+        );
+        platformPiece.receiveShadow = true;
+
+        // Texturización del suelo
+        textureLoader.load(
+            "grid.png",
+            function (texture) {
+                texture.wrapS = THREE.RepeatWrapping;
+                texture.wrapT = THREE.RepeatWrapping;
+                texture.repeat.set(40, 40);
+                platformPiece.material.map = texture;
+                platformPiece.material.needsUpdate = true;
+            }
+        );
+
+        playerFloor.push(platformPiece);
+    }
 }
