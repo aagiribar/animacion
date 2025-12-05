@@ -10,6 +10,8 @@ La versión web de este proyecto se encuentra en [este sandbox de codesandbox](h
 
 El código se puede acceder desde [este enlace](https://codesandbox.io/p/sandbox/animacion-n6dm25).
 
+Un vídeo demostrativo de la simulación puede ser encontrado en [este enlace](https://youtu.be/NQUFGQrlRco).
+
 
 ## Ejecución del proyecto en local
 

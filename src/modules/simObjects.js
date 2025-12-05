@@ -80,12 +80,12 @@ export function initGraphics() {
 
     // Carga de la textura del fondo de estrellas
     const cubeTexture = new THREE.CubeTextureLoader().load([
-        new URL("/px.png", import.meta.url),
-        new URL("/nx.png", import.meta.url),
-        new URL("/py.png", import.meta.url),
-        new URL("/ny.png", import.meta.url),
-        new URL("/pz.png", import.meta.url),
-        new URL("/nz.png", import.meta.url),
+        "px.png",
+        "nx.png",
+        "py.png",
+        "ny.png",
+        "pz.png",
+        "nz.png",
     ]);
 
     scene.background = cubeTexture;
