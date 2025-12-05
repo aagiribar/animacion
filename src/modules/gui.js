@@ -17,7 +17,7 @@ export let ballsOnFloor = 0;
 
 // Elementos de inforación en pantalla
 export let info;
-let infoCubes, infoBalls;
+let infoCubes, infoBalls, infoLock;
 export let infoGame;
 
 /**
@@ -88,6 +88,9 @@ export function initInfo() {
     infoBalls.innerHTML = "Bolas en la plataforma: " + ballsOnFloor;
     info.appendChild(infoBalls);
 
+    infoLock = document.createElement("div");
+    info.appendChild(infoLock);
+
     infoGame = document.createElement("div");
 }
 
@@ -125,6 +128,13 @@ export function updateObjectsOnFloor() {
 function updateInfo() {
     infoCubes.innerHTML = "Cubos en la plataforma: " + cubesOnFloor;
     infoBalls.innerHTML = "Bolas en la plataforma: " + ballsOnFloor;
+
+    if (!uiElements["Colocar cubos"] && !document.pointerLockElement) {
+        infoLock.innerHTML = "Pulsa click izquierdo para activar el control del ratón";
+    }
+    else {
+        infoLock.innerHTML = "";
+    }
 }
 
 /**
