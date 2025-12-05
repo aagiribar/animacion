@@ -62,7 +62,7 @@ export function initGraphics() {
     scene.add(ambientLight);
 
     const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(-10, 18, 5);
+    light.position.set(-30, 34, -33);
     light.castShadow = true;
     const d = 14;
     light.shadow.camera.left = -d;
@@ -71,7 +71,7 @@ export function initGraphics() {
     light.shadow.camera.bottom = -d;
 
     light.shadow.camera.near = 2;
-    light.shadow.camera.far = 50;
+    light.shadow.camera.far = 100;
 
     light.shadow.mapSize.x = 1024;
     light.shadow.mapSize.y = 1024;
