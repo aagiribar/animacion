@@ -58,6 +58,16 @@ export function checkInput() {
                 var c = new THREE.Color();
                 c.set(THREE.MathUtils.randInt(0, Math.pow(2, 24) - 1));
 
+                const cubeMaterial = new THREE.MeshPhongMaterial({ color: c });
+
+                new THREE.TextureLoader().load(
+                    "cubes.jpg",
+                    function (texture) {
+                        cubeMaterial.map = texture;
+                        cubeMaterial.needsUpdate = true;
+                    }
+                );
+
                 pos.set(intersections[0].point.x, intersections[0].point.y + 2, intersections[0].point.z);
                 quat.set(0, 0, 0, 1);
 
@@ -69,7 +79,7 @@ export function checkInput() {
                     THREE.MathUtils.randInt(1, 2),
                     pos,
                     quat,
-                    new THREE.MeshPhongMaterial({ color: c })
+                    cubeMaterial
                 );
                 object.castShadow = true;
                 object.receiveShadow = true;

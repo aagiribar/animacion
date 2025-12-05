@@ -44,11 +44,11 @@ export function createObjects() {
 
     // Texturización del suelo
     textureLoader.load(
-        "grid.png",
+        "cubes_platform.jpg",
         function (texture) {
             texture.wrapS = THREE.RepeatWrapping;
             texture.wrapT = THREE.RepeatWrapping;
-            texture.repeat.set(40, 40);
+            texture.repeat.set(1, 1);
             cubesFloor.material.map = texture;
             cubesFloor.material.needsUpdate = true;
         }
@@ -236,11 +236,11 @@ function createPlayerFloor() {
 
         // Texturización del suelo
         textureLoader.load(
-            "grid.png",
+            "player_platform.jpg",
             function (texture) {
                 texture.wrapS = THREE.RepeatWrapping;
                 texture.wrapT = THREE.RepeatWrapping;
-                texture.repeat.set(sx, 10);
+                texture.repeat.set(sx / 2, 5);
                 platformPiece.material.map = texture;
                 platformPiece.material.needsUpdate = true;
             }
