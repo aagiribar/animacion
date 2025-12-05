@@ -56,10 +56,10 @@ export function initGUI() {
     mouseFolder = gui.addFolder("Ratón");
 
     // Selectores de sensibilidad del ratón
-    mouseFolder.add(uiElements, "Sensibilidad horizontal", 10, 25, 1).onChange((value) => {
+    mouseFolder.add(uiElements, "Sensibilidad horizontal", 1, 25, 1).onChange((value) => {
         firstPersonControls.setHorizontalSensitivity(value);
     });
-    mouseFolder.add(uiElements, "Sensibilidad vertical", 10, 25, 1).onChange((value) => {
+    mouseFolder.add(uiElements, "Sensibilidad vertical", 1, 25, 1).onChange((value) => {
         firstPersonControls.setVerticalSensitivity(value);
     });
 }

@@ -6,6 +6,7 @@ const KEYS = {
     's': 83,
     'w': 87,
     'd': 68,
+    "shift": 16
 };
 
 export class FirstPersonCamera {
@@ -59,8 +60,13 @@ export class FirstPersonCamera {
         const actualTranslation = new THREE.Vector3();
         actualTranslation.copy(this.translation_);
 
-        const forwardVelocity = (this.input_.key(KEYS.w) ? 1 : 0) + (this.input_.key(KEYS.s) ? -1 : 0);
-        const strafeVelocity = (this.input_.key(KEYS.a) ? 1 : 0) + (this.input_.key(KEYS.d) ? -1 : 0);
+        let forwardVelocity = (this.input_.key(KEYS.w) ? 1 : 0) + (this.input_.key(KEYS.s) ? -1 : 0);
+        let strafeVelocity = (this.input_.key(KEYS.a) ? 1 : 0) + (this.input_.key(KEYS.d) ? -1 : 0);
+
+        if (this.input_.key(KEYS.shift)) {
+            forwardVelocity *= 1.5;
+            strafeVelocity *= 1.5;
+        }
 
         const qx = new THREE.Quaternion();
         qx.setFromAxisAngle(new THREE.Vector3(0, 1, 0), this.phi_);
