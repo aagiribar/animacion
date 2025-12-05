@@ -4,6 +4,7 @@ const app = express();
 const port = 1234;
 
 app.use(express.static("assets"));
+app.use(express.static("assets/skybox"))
 app.use(express.static("src"));
 app.use(express.static("libs"));
 app.use(express.static("src/modules"));

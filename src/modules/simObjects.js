@@ -78,6 +78,18 @@ export function initGraphics() {
 
     scene.add(light);
 
+    // Carga de la textura del fondo de estrellas
+    const cubeTexture = new THREE.CubeTextureLoader().load([
+        new URL("/px.png", import.meta.url),
+        new URL("/nx.png", import.meta.url),
+        new URL("/py.png", import.meta.url),
+        new URL("/ny.png", import.meta.url),
+        new URL("/pz.png", import.meta.url),
+        new URL("/nz.png", import.meta.url),
+    ]);
+
+    scene.background = cubeTexture;
+
     //Redimensión de la ventana
     window.addEventListener("resize", onWindowResize);
 }
